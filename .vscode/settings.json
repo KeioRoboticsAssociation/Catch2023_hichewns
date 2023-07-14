@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/moyuboo/ros2_ws/install/ros2_practice/lib/python3.10/site-packages",
+        "/home/moyuboo/ros2_ws/install/cal_rtheta/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}

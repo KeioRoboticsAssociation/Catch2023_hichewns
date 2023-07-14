@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<robot name="practice">
+  <material name="red"> 
+    <color rgba="1.0 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="blue">
+    <color rgba="0.0 0.0 1.0 1.0"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+
+  <link name="base_link"/>
+
+  <joint name="base_to_body" type="fixed">
+    <parent link="base_link"/>
+    <child link="body_link"/>
+    <origin xyz="0.3 0.3 0.1"/>
+  </joint>
+
+  <link name="body_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.6 0.2"/>
+      </geometry>
+      <origin xyz="0 0 0"/>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <joint name="body_to_arm1" type="revolute">
+    <parent link="body_link"/>
+    <child link="arm1"/>
+    <axis xyz="0 0 1"/><!--revolute axis-->
+    <limit lower="-1.57" upper="1.57" effort="0.5" velocity="6.0"/>
+    <origin xyz="0 0 0.125"/>
+  </joint>
+
+  <link name="arm1">
+    <visual>
+      <geometry>
+        <box size="0.1 1.4 0.05"/>
+      </geometry>
+      <origin xyz="0 0.7 0"/>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <joint name="arm1_to_arm2" type="prismatic">
+    <parent link="arm1"/>
+    <child link="arm2"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="0.4" lower="0.0" upper="1.0" velocity="0.5"/>
+    <origin xyz="0 0.2 0.035"/>
+  </joint>
+
+  <link name="arm2">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.02"/>
+      </geometry>
+      <origin xyz="0 0 0"/>
+      <material name="red"/>
+    </visual>
+  </link>
+
+</robot>

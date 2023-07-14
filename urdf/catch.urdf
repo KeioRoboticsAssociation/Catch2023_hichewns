@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+<robot name="catch">
+
+<!--赤-->
+  <material name="red"> 
+    <color rgba="1.0 0.0 0.0 1.0"/>
+  </material>
+<!--青-->
+  <material name="blue">
+    <color rgba="0.0 0.0 1.0 1.0"/>
+  </material>
+<!--黒-->
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+<!--ベースリンク-->
+  <link name="base_link"/>
+
+<!--ベースリンクとボディリンク間のジョイント-->
+  <joint name="base_to_body" type="fixed">
+    <parent link="base_link"/>
+    <child link="body_link"/>
+    <origin xyz="0 0 0.1"/>
+  </joint>
+
+<!-- ボディリンク -->
+<link name="body_link">
+  <visual>
+    <geometry>
+      <box size="0.3 0.3 0.2"/>
+    </geometry>
+    <origin xyz="0 0 0"/>
+    <material name="black"/>
+  </visual>
+</link>
+
+<!-- ボディリンクとarm1のジョイント -->
+<joint name="body_to_top" type="revolute">
+  <parent link="body_link"/>
+  <child link="top_link"/>
+  <axis xyz="0 0 1"/> <!-- revolute axis -->
+  <limit lower="-3.14" upper="3.14" effort="0.5" velocity="6.0"/>
+  <origin xyz="0 0 0.125"/>
+</joint>
+
+<!-- arm1リンク -->
+<link name="top_link">
+  <visual>
+    <geometry>
+      <box size="0.05 0.1 0.05"/>
+    </geometry>
+    <origin xyz="0 0 0"/>
+    <material name="blue"/>
+  </visual>
+</link>
+
+<!-- top_linkとleft_linkのジョイント -->
+<joint name="top_to_left" type="fixed">
+  <!-- top_linkとleft_linkの接続 -->
+  <parent link="top_link"/>
+  <child link="left_link"/>
+  <origin xyz="0.475 0.075 0" rpy="0 0 0"/>
+</joint>
+
+<!-- left_linkリンク -->
+<link name="left_link">
+  <!-- left_linkの形状 -->
+  <visual>
+    <geometry>
+      <box size="1.0 0.05 0.05"/>
+    </geometry>
+  </visual>
+</link>
+
+<!-- top_linkとright_linkのジョイント -->
+<joint name="top_to_right" type="fixed">
+  <!-- top_linkとright_linkの接続 -->
+  <parent link="top_link"/>
+  <child link="right_link"/>
+  <origin xyz="0.475 -0.075 0" rpy="0 0 0"/>
+</joint>
+
+<!-- right_linkリンク -->
+<link name="right_link">
+  <!-- right_linkの形状 -->
+  <visual>
+    <geometry>
+      <box size="1.0 0.05 0.05"/>
+    </geometry>
+  </visual>
+</link>
+
+<!-- box_linkとright_linkのジョイント -->
+<joint name="right_to_center" type="prismatic">
+  <!-- box_linkとright_linkの接続 -->
+  <parent link="right_link"/>
+  <child link="center_link"/>
+  <axis xyz="1 0 0"/>
+  <limit lower="0.25" upper="0.6" effort="100" velocity="0.1"/>
+  <origin xyz="0 0.075 0" rpy="0 0 0"/>
+</joint>
+
+<!-- box_linkリンク -->
+<link name="center_link">
+  <!-- box_linkの形状 -->
+  <visual>
+    <geometry>
+      <box size="0.5 0.105 0.05"/>
+    </geometry>
+  </visual>
+</link>
+
+<!-- box_linkとarm2のジョイント -->
+<joint name="center_to_arm2" type="prismatic">
+  <!-- box_linkとarm2の接続 -->
+  <parent link="center_link"/>
+  <child link="arm2"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="-0.04" upper="0.04" effort="100" velocity="0.1"/>
+  <origin xyz="0.2 0 0" rpy="0 0 0"/>
+</joint>
+
+<!-- arm2リンク -->
+<link name="arm2">
+  <!-- arm2リンクの形状 -->
+  <visual>
+    <geometry>
+      <box size="0.05 0.05 0.2"/>
+    </geometry>
+  </visual>
+</link>
+
+<!-- arm2とarm3のジョイント -->
+<joint name="arm2_to_arm3" type="fixed">
+  <!-- arm2とarm3の接続 -->
+  <parent link="arm2"/>
+  <child link="arm3"/>
+  <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+</joint>
+
+<!-- arm3リンク -->
+<link name="arm3">
+  <!-- arm3リンクの形状 -->
+  <visual>
+    <geometry>
+      <box size="0.05 0.1 0.02"/>
+    </geometry>
+  </visual>
+</link>
+
+<!-- arm3とarm4のジョイント -->
+<joint name="arm3_to_hand1" type="revolute">
+  <!-- arm3とarm4の接続 -->
+  <parent link="arm3"/>
+  <child link="hand1"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="-3.14" upper="3.14" effort="0.5" velocity="6.0"/>
+  <origin xyz="0 0 -0.02" rpy="0 0 0"/>
+</joint>
+
+<!-- arm4リンク -->
+<link name="hand1">
+  <!-- arm4リンクの形状 -->
+  <visual>
+    <geometry>
+      <box size="0.025 0.01 0.03"/>
+    </geometry>
+  </visual>
+</link>
+
+<!-- arm3とarm5のジョイント -->
+<joint name="arm3_to_hand2" type="revolute">
+  <!-- arm3とarm5の接続 -->
+  <parent link="arm3"/>
+  <child link="hand2"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="-3.14" upper="3.14" effort="0.5" velocity="6.0"/>
+  <origin xyz="0 0.03 -0.02" rpy="0 0 0"/>
+</joint>
+
+<!-- arm5リンク -->
+<link name="hand2">
+  <!-- arm5リンクの形状 -->
+  <visual>
+    <geometry>
+      <box size="0.025 0.01 0.03"/>
+    </geometry>
+  </visual>
+</link>
+
+<!-- arm3とarm6のジョイント -->
+<joint name="arm3_to_hand3" type="revolute">
+  <!-- arm3とarm6の接続 -->
+  <parent link="arm3"/>
+  <child link="hand3"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="-3.14" upper="3.14" effort="0.5" velocity="6.0"/>
+  <origin xyz="0 -0.03 -0.02" rpy="0 0 0"/>
+</joint>
+
+<!-- arm6リンク -->
+<link name="hand3">
+  <!-- arm6リンクの形状 -->
+  <visual>
+    <geometry>
+      <box size="0.025 0.01 0.03"/>
+    </geometry>
+  </visual>
+</link>
+
+</robot>
+
+
+
+
+
+
+
+
+
+
