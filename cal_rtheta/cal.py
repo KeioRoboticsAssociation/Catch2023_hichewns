@@ -13,39 +13,43 @@ class Cal(Node):
         self.y = 0.0
         self.up = 0
         self.down = 0
-        self.rev1 = 0.0
-        self.rev2 = 0.0
-        self.rev3 = 0.0
-        self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.rev = 0.0
+        self.currentPos = [0.0, 0.0, 0.0, 0.0]
 
     def joy_callback(self, joy_msg):
         self.r = joy_msg.data[0]
         self.y = joy_msg.data[1]
         self.up = int(joy_msg.data[2])
-        self.down = int(joy_msg.data[3])
-        self.rev1 = int(joy_msg.data[4])
-        self.rev2 = int(joy_msg.data[5])
-        self.rev3 = int(joy_msg.data[6])
+        self.rev = int(joy_msg.data[3])
+
         if self.r >= 0:
             self.currentPos[0] += self.r / 100
         else:
             self.currentPos[0] -= abs(self.r) / 100
         if self.y > 0:
             self.currentPos[1] += self.y / 100
+            if self.currentPos[1]>=0.6:
+                self.currentPos[1]=0.6
         else:
             self.currentPos[1] -= abs(self.y) / 100
+            if self.currentPos[1]<=0.25:
+                self.currentPos[1]=0.25
 
         if self.up == 1:
-            self.currentPos[2] += 1.0
-        elif self.down == 1:
-            self.currentPos[2] -= 1.0
+            self.currentPos[2] += 0.04
+            if self.currentPos[2]>=0.04:
+                self.currentPos[2]=0.04
+        elif self.up == -1:
+            self.currentPos[2] -= 0.08
+            if self.currentPos[2]<=-0.04:
+                self.currentPos[2]=-0.04
+                
 
-        if self.rev1 == 1:
+        if self.rev == 1:
             self.currentPos[3] += 1.0
-        if self.rev2 == 1:
-            self.currentPos[4] += 1.0
-        if self.rev3 == 1:
-            self.currentPos[5] += 1.0
+        elif self.rev == -1:
+            self.currentPos[3] -= 1.0
+        
 
     def callback(self):
         pos_data = Float32MultiArray()

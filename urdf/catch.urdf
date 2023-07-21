@@ -131,11 +131,13 @@
 </link>
 
 <!-- arm2とarm3のジョイント -->
-<joint name="arm2_to_arm3" type="fixed">
+<joint name="arm2_to_arm3" type="revolute">
   <!-- arm2とarm3の接続 -->
   <parent link="arm2"/>
   <child link="arm3"/>
+  <axis xyz="0 0 1"/>
   <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+  <limit lower="0" upper="3.14" effort="0.5" velocity="6.0"/>
 </joint>
 
 <!-- arm3リンク -->
@@ -149,12 +151,10 @@
 </link>
 
 <!-- arm3とarm4のジョイント -->
-<joint name="arm3_to_hand1" type="revolute">
+<joint name="arm3_to_hand1" type="fixed">
   <!-- arm3とarm4の接続 -->
   <parent link="arm3"/>
   <child link="hand1"/>
-  <axis xyz="0 0 1"/>
-  <limit lower="-3.14" upper="3.14" effort="0.5" velocity="6.0"/>
   <origin xyz="0 0 -0.02" rpy="0 0 0"/>
 </joint>
 
@@ -169,12 +169,10 @@
 </link>
 
 <!-- arm3とarm5のジョイント -->
-<joint name="arm3_to_hand2" type="revolute">
+<joint name="arm3_to_hand2" type="fixed">
   <!-- arm3とarm5の接続 -->
   <parent link="arm3"/>
   <child link="hand2"/>
-  <axis xyz="0 0 1"/>
-  <limit lower="-3.14" upper="3.14" effort="0.5" velocity="6.0"/>
   <origin xyz="0 0.03 -0.02" rpy="0 0 0"/>
 </joint>
 
@@ -189,12 +187,10 @@
 </link>
 
 <!-- arm3とarm6のジョイント -->
-<joint name="arm3_to_hand3" type="revolute">
+<joint name="arm3_to_hand3" type="fixed">
   <!-- arm3とarm6の接続 -->
   <parent link="arm3"/>
   <child link="hand3"/>
-  <axis xyz="0 0 1"/>
-  <limit lower="-3.14" upper="3.14" effort="0.5" velocity="6.0"/>
   <origin xyz="0 -0.03 -0.02" rpy="0 0 0"/>
 </joint>
 

@@ -10,8 +10,8 @@ class JointPublisher(Node):
         self.publisher_ = self.create_publisher(JointState, 'joint_states', 10)
         self.subscription = self.create_subscription(Float32MultiArray, 'pos_data', self.pos_callback, 10)
         self.js0 = JointState()
-        self.pos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.js0.name = ['body_to_top', 'right_to_center', 'center_to_arm2', 'arm3_to_hand1', 'arm3_to_hand2', 'arm3_to_hand3']
+        self.pos = [0.0, 0.0, 0.0, 0.0]
+        self.js0.name = ['body_to_top', 'right_to_center', 'center_to_arm2', 'arm2_to_arm3']
         self.tmr = self.create_timer(0.05, self.callback)
 
     def pos_callback(self, pos_msg):
@@ -19,8 +19,6 @@ class JointPublisher(Node):
         self.pos[1] = pos_msg.data[1]
         self.pos[2] = pos_msg.data[2]
         self.pos[3] = pos_msg.data[3]
-        self.pos[4] = pos_msg.data[4]
-        self.pos[5] = pos_msg.data[5]
 
     def callback(self):
         self.js0.header.stamp = self.get_clock().now().to_msg()
