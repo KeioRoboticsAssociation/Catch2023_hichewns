@@ -1,0 +1,6 @@
+source;share/cal_rtheta/hook/pythonpath.ps1
+source;share/cal_rtheta/hook/pythonpath.dsv
+source;share/cal_rtheta/hook/pythonpath.sh
+source;share/cal_rtheta/hook/ament_prefix_path.ps1
+source;share/cal_rtheta/hook/ament_prefix_path.dsv
+source;share/cal_rtheta/hook/ament_prefix_path.sh

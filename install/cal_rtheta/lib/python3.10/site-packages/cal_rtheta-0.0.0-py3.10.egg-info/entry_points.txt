@@ -1,0 +1,5 @@
+[console_scripts]
+cal = cal_rtheta.cal:main
+joint_publisher = cal_rtheta.joint_publisher:main
+joysub_cal = cal_rtheta.joysub_cal:main
+

@@ -1,0 +1,53 @@
+[0.424s] Invoking command in '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta': PYTHONPATH=/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/prefix_override:/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/cal_rtheta build --build-base /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build install --record /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/install.log --single-version-externally-managed
+[0.585s] running egg_info
+[0.585s] creating build/cal_rtheta/cal_rtheta.egg-info
+[0.585s] writing build/cal_rtheta/cal_rtheta.egg-info/PKG-INFO
+[0.586s] writing dependency_links to build/cal_rtheta/cal_rtheta.egg-info/dependency_links.txt
+[0.586s] writing entry points to build/cal_rtheta/cal_rtheta.egg-info/entry_points.txt
+[0.586s] writing requirements to build/cal_rtheta/cal_rtheta.egg-info/requires.txt
+[0.586s] writing top-level names to build/cal_rtheta/cal_rtheta.egg-info/top_level.txt
+[0.586s] writing manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+[0.587s] reading manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+[0.587s] writing manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+[0.587s] running build
+[0.587s] running build_py
+[0.588s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build
+[0.588s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib
+[0.588s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+[0.588s] copying cal_rtheta/cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+[0.588s] copying cal_rtheta/joysub_cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+[0.588s] copying cal_rtheta/ex.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+[0.588s] copying cal_rtheta/joint_publisher.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+[0.588s] copying cal_rtheta/__init__.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+[0.588s] running install
+[0.588s] running install_lib
+[0.589s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+[0.589s] copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+[0.589s] copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/joysub_cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+[0.589s] copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/ex.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+[0.589s] copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/joint_publisher.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+[0.589s] copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/__init__.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+[0.589s] byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/cal.py to cal.cpython-310.pyc
+[0.590s] byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/joysub_cal.py to joysub_cal.cpython-310.pyc
+[0.590s] byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/ex.py to ex.cpython-310.pyc
+[0.590s] byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/joint_publisher.py to joint_publisher.cpython-310.pyc
+[0.590s] byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/__init__.py to __init__.cpython-310.pyc
+[0.590s] running install_data
+[0.591s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index
+[0.591s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index/resource_index
+[0.591s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index/resource_index/packages
+[0.591s] copying resource/cal_rtheta -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index/resource_index/packages
+[0.591s] copying package.xml -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta
+[0.591s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/launch
+[0.591s] copying launch/cal.launch.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/launch
+[0.591s] creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/urdf
+[0.591s] copying urdf/practice_cal.urdf -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/urdf
+[0.591s] copying urdf/catch.urdf -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/urdf
+[0.591s] running install_egg_info
+[0.592s] Copying build/cal_rtheta/cal_rtheta.egg-info to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta-0.0.0-py3.10.egg-info
+[0.593s] running install_scripts
+[0.606s] Installing cal script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+[0.606s] Installing joint_publisher script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+[0.607s] Installing joysub_cal script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+[0.607s] writing list of installed files to '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/install.log'
+[0.625s] Invoked command in '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta' returned '0': PYTHONPATH=/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/prefix_override:/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/cal_rtheta build --build-base /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build install --record /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/install.log --single-version-externally-managed

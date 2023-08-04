@@ -1,0 +1,51 @@
+running egg_info
+creating build/cal_rtheta/cal_rtheta.egg-info
+writing build/cal_rtheta/cal_rtheta.egg-info/PKG-INFO
+writing dependency_links to build/cal_rtheta/cal_rtheta.egg-info/dependency_links.txt
+writing entry points to build/cal_rtheta/cal_rtheta.egg-info/entry_points.txt
+writing requirements to build/cal_rtheta/cal_rtheta.egg-info/requires.txt
+writing top-level names to build/cal_rtheta/cal_rtheta.egg-info/top_level.txt
+writing manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+reading manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+writing manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+copying cal_rtheta/cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+copying cal_rtheta/joysub_cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+copying cal_rtheta/ex.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+copying cal_rtheta/joint_publisher.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+copying cal_rtheta/__init__.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta
+running install
+running install_lib
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/joysub_cal.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/ex.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/joint_publisher.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+copying /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build/lib/cal_rtheta/__init__.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta
+byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/cal.py to cal.cpython-310.pyc
+byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/joysub_cal.py to joysub_cal.cpython-310.pyc
+byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/ex.py to ex.cpython-310.pyc
+byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/joint_publisher.py to joint_publisher.cpython-310.pyc
+byte-compiling /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index/resource_index
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index/resource_index/packages
+copying resource/cal_rtheta -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/ament_index/resource_index/packages
+copying package.xml -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/launch
+copying launch/cal.launch.py -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/launch
+creating /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/urdf
+copying urdf/practice_cal.urdf -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/urdf
+copying urdf/catch.urdf -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/urdf
+running install_egg_info
+Copying build/cal_rtheta/cal_rtheta.egg-info to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta-0.0.0-py3.10.egg-info
+running install_scripts
+Installing cal script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+Installing joint_publisher script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+Installing joysub_cal script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+writing list of installed files to '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/install.log'

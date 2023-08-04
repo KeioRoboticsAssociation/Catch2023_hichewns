@@ -1,0 +1,24 @@
+[0.447s] Invoking command in '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta': PYTHONPATH=/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/prefix_override:/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/cal_rtheta build --build-base /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build install --record /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/install.log --single-version-externally-managed
+[0.615s] running egg_info
+[0.615s] writing build/cal_rtheta/cal_rtheta.egg-info/PKG-INFO
+[0.615s] writing dependency_links to build/cal_rtheta/cal_rtheta.egg-info/dependency_links.txt
+[0.616s] writing entry points to build/cal_rtheta/cal_rtheta.egg-info/entry_points.txt
+[0.616s] writing requirements to build/cal_rtheta/cal_rtheta.egg-info/requires.txt
+[0.616s] writing top-level names to build/cal_rtheta/cal_rtheta.egg-info/top_level.txt
+[0.617s] reading manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+[0.617s] writing manifest file 'build/cal_rtheta/cal_rtheta.egg-info/SOURCES.txt'
+[0.618s] running build
+[0.618s] running build_py
+[0.618s] running install
+[0.618s] running install_lib
+[0.619s] running install_data
+[0.619s] copying urdf/catch.urdf -> /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/share/cal_rtheta/urdf
+[0.619s] running install_egg_info
+[0.620s] removing '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta-0.0.0-py3.10.egg-info' (and everything under it)
+[0.621s] Copying build/cal_rtheta/cal_rtheta.egg-info to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages/cal_rtheta-0.0.0-py3.10.egg-info
+[0.621s] running install_scripts
+[0.635s] Installing cal script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+[0.635s] Installing joint_publisher script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+[0.636s] Installing joysub_cal script to /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/cal_rtheta
+[0.636s] writing list of installed files to '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/install.log'
+[0.658s] Invoked command in '/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta' returned '0': PYTHONPATH=/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/prefix_override:/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/install/cal_rtheta/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/cal_rtheta build --build-base /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/build install --record /home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/build/cal_rtheta/install.log --single-version-externally-managed

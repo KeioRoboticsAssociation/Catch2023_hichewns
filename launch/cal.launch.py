@@ -31,13 +31,16 @@ def generate_launch_description():
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',
-            arguments=[urdf]),
+            arguments=[urdf],
+            output="screen"
+            ),
 
         # Node(
         #     package='joint_state_publisher_gui',
         #     executable='joint_state_publisher_gui',
         #     name='joint_state_publisher_gui',
-        #     arguments=[urdf]), 
+        #     arguments=[urdf], 
+        #     output="screen"),
         Node(
             package="rviz2",
             executable="rviz2",
