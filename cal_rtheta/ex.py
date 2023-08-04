@@ -10,7 +10,6 @@ class Cal(Node):
         self.tmr = self.create_timer(0.1, self.callback)
         self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-    def
       
 
     def callback(self):

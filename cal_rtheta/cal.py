@@ -23,7 +23,7 @@ class Cal(Node):
         self.release = 0.0
         self.init = 0.0
         self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     def joy_callback(self, joy_msg):
         self.r = joy_msg.data[0]
@@ -85,6 +85,12 @@ class Cal(Node):
         else:
             self.currentPos[3] -= abs(self.revarm3) / 50
             self.degPos[3] -= math.degrees(abs(self.revarm3) / 50)
+
+        if self.catch==1.0:
+            self.degPos[7]=1.0
+        
+        if self.release==1.0:
+            self.degPos[7]=0.0
 
 
         
