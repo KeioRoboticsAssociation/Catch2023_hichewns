@@ -3,9 +3,9 @@ from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 import math
 
-class Cal(Node):
+class Joy_operation(Node):
     def __init__(self):
-        super().__init__('cal')
+        super().__init__('joy_operation')
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         self.degpos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
         self.subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
@@ -52,10 +52,10 @@ class Cal(Node):
         if self.y > 0:
             self.currentPos[1] += self.y / 100
             self.degPos[1] += self.y / 100
-            if self.currentPos[1]>=0.4:
-                self.currentPos[1]=0.4
-            if self.degPos[1]>=0.4:
-                self.degPos[1]=0.4
+            if self.currentPos[1]>=0.95:
+                self.currentPos[1]=0.95
+            if self.degPos[1]>=0.95:
+                self.degPos[1]=0.95
 
         else:
             self.currentPos[1] -= abs(self.y) / 100
@@ -96,12 +96,12 @@ class Cal(Node):
         
         if self.rev == 1.0:
             if self.status==1:
-                self.currentPos[4] = math.pi/2
-                self.currentPos[5] = math.pi/2
-                self.currentPos[6] = math.pi/2
-                self.degPos[4] = math.degrees(math.pi/2)
-                self.degPos[5] = math.degrees(math.pi/2)
-                self.degPos[6] = math.degrees(math.pi/2)
+                self.currentPos[4] = math.pi/4
+                self.currentPos[5] = math.pi/4
+                self.currentPos[6] = math.pi/4
+                self.degPos[4] = math.degrees(math.pi/4)
+                self.degPos[5] = math.degrees(math.pi/4)
+                self.degPos[6] = math.degrees(math.pi/4)
                 self.status = 0
 
             elif self.status==0:
@@ -127,7 +127,7 @@ class Cal(Node):
 
 def main():
     rclpy.init()
-    cal = Cal()
+    cal = Joy_operation()
     rclpy.spin(cal)
     rclpy.shutdown()
 

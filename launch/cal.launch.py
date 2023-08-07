@@ -17,9 +17,15 @@ def generate_launch_description():
 
         Node(
             package="cal_rtheta",
-            executable='cal',
-            name='cal',
+            executable='input',
+            name='input',
             arguments=[urdf]),
+
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='joy_operation',
+        #     name='joy_operation',
+        #     arguments=[urdf]),
         
         Node(
             package="cal_rtheta",
@@ -28,12 +34,17 @@ def generate_launch_description():
             arguments=[urdf]),
 
         Node(
+            package="cal_rtheta",
+            executable='xy_to_rtheta',
+            name='xy_to_rtheta',
+            arguments=[urdf]),
+
+        Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',
             arguments=[urdf],
-            output="screen"
-            ),
+            output="screen"),
 
         # Node(
         #     package='joint_state_publisher_gui',
@@ -41,6 +52,7 @@ def generate_launch_description():
         #     name='joint_state_publisher_gui',
         #     arguments=[urdf], 
         #     output="screen"),
+
         Node(
             package="rviz2",
             executable="rviz2",

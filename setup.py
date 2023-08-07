@@ -25,8 +25,9 @@ setup(
         'console_scripts': [
             'joysub_cal = cal_rtheta.joysub_cal:main',
             'joint_publisher = cal_rtheta.joint_publisher:main',
-            'cal = cal_rtheta.cal:main'
-    
+            'joy_operation = cal_rtheta.joy_operation:main',
+            'input = cal_rtheta.input:main',
+            'xy_to_rtheta = cal_rtheta.xy_to_rtheta:main'
         ],
     },
 )
