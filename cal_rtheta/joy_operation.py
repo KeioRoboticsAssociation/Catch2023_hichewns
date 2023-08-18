@@ -1,12 +1,15 @@
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import Bool
 from std_msgs.msg import Float32MultiArray
 import math
+import time
 
 class Joy_operation(Node):
     def __init__(self):
         super().__init__('joy_operation')
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
+        self.catch_judge_publisher = self.create_publisher(Bool, 'catch_data', 10)
         self.degpos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
         self.subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.tmr = self.create_timer(0.1, self.callback)
@@ -18,10 +21,12 @@ class Joy_operation(Node):
         self.mid = 0.0
         self.down = 0.0
         self.revarm3 = 0.0
+        self.flag = 1
         self.rev = 0.0 #hand1-3
         self.catch = 0.0
         self.release = 0.0
         self.init = 0.0
+        self.grasp = Bool()
         self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
@@ -38,8 +43,8 @@ class Joy_operation(Node):
         self.release = joy_msg.data[9]
   
         if self.init==1:
-            self.currentPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0, 0.0]
-            self.degPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0, 0.0]
+            self.currentPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
+            self.degPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
 
         if self.r >= 0:
             self.currentPos[0] += self.r / 100
@@ -87,34 +92,40 @@ class Joy_operation(Node):
             self.degPos[3] -= math.degrees(abs(self.revarm3) / 50)
 
         if self.catch==1.0:
-            self.degPos[7]=1.0
+            self.grasp.data = True
         
         if self.release==1.0:
-            self.degPos[7]=0.0
+            self.grasp.data = False
+
+        self.catch_judge_publisher.publish(self.grasp)
 
 
         
         if self.rev == 1.0:
-            if self.status==1:
-                self.currentPos[4] = math.pi/4
-                self.currentPos[5] = math.pi/4
-                self.currentPos[6] = math.pi/4
-                self.degPos[4] = math.degrees(math.pi/4)
-                self.degPos[5] = math.degrees(math.pi/4)
-                self.degPos[6] = math.degrees(math.pi/4)
-                self.status = 0
+            if self.flag == 1:
+                if self.status==1:
+                    self.currentPos[4] = math.pi/4
+                    self.currentPos[5] = math.pi/4
+                    self.currentPos[6] = math.pi/4
+                    self.degPos[4] = math.degrees(math.pi/4)
+                    self.degPos[5] = math.degrees(math.pi/4)
+                    self.degPos[6] = math.degrees(math.pi/4)
+                    self.status = 0
+                    self.flag = 0
 
-            elif self.status==0:
-                self.currentPos[4] = 0.0
-                self.currentPos[5] = 0.0
-                self.currentPos[6] = 0.0
-                self.degPos[4] = math.degrees(0.0)
-                self.degPos[5] = math.degrees(0.0)
-                self.degPos[6] = math.degrees(0.0)
-                self.status = 1
-        
-        # if self.init==1:
-        #     self.currentPos=[]       
+                elif self.status==0:
+                    self.currentPos[4] = 0.0
+                    self.currentPos[5] = 0.0
+                    self.currentPos[6] = 0.0
+                    self.degPos[4] = math.degrees(0.0)
+                    self.degPos[5] = math.degrees(0.0)
+                    self.degPos[6] = math.degrees(0.0)
+                    self.status = 1
+                    self.flag = 0 
+
+            elif self.flag == 0:
+                time.sleep(0.2)
+                self.flag = 1
 
     def callback(self):
         pos_data = Float32MultiArray()

@@ -15,17 +15,17 @@ def generate_launch_description():
             name='joint_publisher',
             arguments=[urdf]),
 
-        Node(
-            package="cal_rtheta",
-            executable='input',
-            name='input',
-            arguments=[urdf]),
-
         # Node(
         #     package="cal_rtheta",
-        #     executable='joy_operation',
-        #     name='joy_operation',
+        #     executable='input',
+        #     name='input',
         #     arguments=[urdf]),
+
+        Node(
+            package="cal_rtheta",
+            executable='joy_operation',
+            name='joy_operation',
+            arguments=[urdf]),
         
         Node(
             package="cal_rtheta",
@@ -33,11 +33,11 @@ def generate_launch_description():
             name='joysub_cal',
             arguments=[urdf]),
 
-        Node(
-            package="cal_rtheta",
-            executable='xy_to_rtheta',
-            name='xy_to_rtheta',
-            arguments=[urdf]),
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='xy_to_rtheta',
+        #     name='xy_to_rtheta',
+        #     arguments=[urdf]),
 
         Node(
             package="cal_rtheta",
