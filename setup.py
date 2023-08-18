@@ -27,6 +27,7 @@ setup(
             'joint_publisher = cal_rtheta.joint_publisher:main',
             'joy_operation = cal_rtheta.joy_operation:main',
             'input = cal_rtheta.input:main',
+            'convert = cal_rtheta.convert:main',
             'xy_to_rtheta = cal_rtheta.xy_to_rtheta:main'
         ],
     },

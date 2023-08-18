@@ -15,6 +15,7 @@ class XY_to_Rtheta(Node):
         self.status = 0
         self.r = 0.0
         self.y = 0.0
+        
         # arm2
         self.up = 0.0
         self.mid = 0.0

@@ -40,6 +40,12 @@ def generate_launch_description():
             arguments=[urdf]),
 
         Node(
+            package="cal_rtheta",
+            executable='convert',
+            name='convert',
+            arguments=[urdf]),
+
+        Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',

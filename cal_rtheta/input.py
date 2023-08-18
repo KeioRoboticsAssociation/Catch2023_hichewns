@@ -8,14 +8,12 @@ class Input(Node):
     def __init__(self):
         super().__init__('input')
         self.publisher_ = self.create_publisher(Point, 'input', 1)
-        self.timer_period = 5.0  # メッセージを送信する間隔（秒）
+        self.timer_period = 5.0
         self.timer = self.create_timer(self.timer_period, self.publish_coordinates)
 
     def publish_coordinates(self):
-        # ここで座標を読み込むか、直接座標を生成するか決定します
-        # この例では、座標を直接生成します
         coordinates = [
-            (0.4, 0.0),
+            (0.0, 0.0),
         ]
 
         for coord in coordinates:
