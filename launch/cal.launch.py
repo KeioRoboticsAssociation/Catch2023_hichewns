@@ -21,6 +21,12 @@ def generate_launch_description():
         #     name='input',
         #     arguments=[urdf]),
 
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='xy_to_rtheta',
+        #     name='xy_to_rtheta',
+        #     arguments=[urdf]),
+
         Node(
             package="cal_rtheta",
             executable='joy_operation',
@@ -32,12 +38,6 @@ def generate_launch_description():
             executable='joysub_cal',
             name='joysub_cal',
             arguments=[urdf]),
-
-        # Node(
-        #     package="cal_rtheta",
-        #     executable='xy_to_rtheta',
-        #     name='xy_to_rtheta',
-        #     arguments=[urdf]),
 
         Node(
             package="cal_rtheta",

@@ -8,14 +8,14 @@ from geometry_msgs.msg import Point
 class XY_to_Rtheta(Node):
     def __init__(self):
         super().__init__('xy_to_rtheta')
-        self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
+        self.pos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
         #self.degpos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
-        self.subscription = self.create_subscription(Point, 'input', self.input_callback, 1)
+        self.subscription = self.create_subscription(Point, 'input', self.input_callback, 10)
+        self.cur_subscription = self.create_subscription(Float32MultiArray, 'current_pos', self.current_pos_callback, 10)
         self.tmr = self.create_timer(0.1, self.callback)
         self.status = 0
         self.r = 0.0
         self.y = 0.0
-        
         # arm2
         self.up = 0.0
         self.mid = 0.0
@@ -43,12 +43,9 @@ class XY_to_Rtheta(Node):
         self.currentPos[6]=0.0
 
     def callback(self):
-        pos_data = Float32MultiArray()
-        pos_data.data = self.currentPos
-        self.pos_publisher.publish(pos_data)
-        # degpos_data = Float32MultiArray()
-        # degpos_data.data = self.degPos
-        # self.degpos_publisher.publish(degpos_data)
+        degpos_data = Float32MultiArray()
+        degpos_data.data = self.degPos
+        self.degpos_publisher.publish(degpos_data)
 
 
 def main():
