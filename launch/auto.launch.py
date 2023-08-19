@@ -21,23 +21,23 @@ def generate_launch_description():
         #     name='input',
         #     arguments=[urdf]),
 
+        Node(
+            package="cal_rtheta",
+            executable='xy_to_rtheta',
+            name='xy_to_rtheta',
+            arguments=[urdf]),
+
         # Node(
         #     package="cal_rtheta",
-        #     executable='xy_to_rtheta',
-        #     name='xy_to_rtheta',
+        #     executable='joy_operation',
+        #     name='joy_operation',
         #     arguments=[urdf]),
-
-        Node(
-            package="cal_rtheta",
-            executable='joy_operation',
-            name='joy_operation',
-            arguments=[urdf]),
         
-        Node(
-            package="cal_rtheta",
-            executable='joysub_cal',
-            name='joysub_cal',
-            arguments=[urdf]),
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='joysub_cal',
+        #     name='joysub_cal',
+        #     arguments=[urdf]),
 
         # Node(
         #     package="cal_rtheta",
@@ -64,6 +64,3 @@ def generate_launch_description():
             executable="rviz2",
             name="rviz2"),
     ])
-    
-    
-  

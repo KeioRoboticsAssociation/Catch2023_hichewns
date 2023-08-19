@@ -9,7 +9,7 @@ class JoySubscriber(Node):
         super().__init__('joy_subscriber')
         self.subscription = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
         self.publisher_ = self.create_publisher(Float32MultiArray, 'joy_data', 10)
-        self.tmr = self.create_timer(0.01, self.callback)
+        self.tmr = self.create_timer(0.005, self.callback)
         self.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     def joy_callback(self, joy_msg):

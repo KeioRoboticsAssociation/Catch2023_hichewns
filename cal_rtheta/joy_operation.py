@@ -55,20 +55,20 @@ class Joy_operation(Node):
             self.degPos[0] -= math.degrees(abs(self.r) / 100)
 
         if self.y > 0:
-            self.currentPos[1] += self.y / 100
-            self.degPos[1] += self.y / 100
-            if self.currentPos[1]>=0.95:
-                self.currentPos[1]=0.95
-            if self.degPos[1]>=0.95:
-                self.degPos[1]=0.95
+            self.currentPos[1] += self.y / 500
+            self.degPos[1] += self.y / 500
+            if self.currentPos[1]>=0.542:
+                self.currentPos[1]=0.542
+            if self.degPos[1]>=0.542:
+                self.degPos[1]=0.542
 
         else:
-            self.currentPos[1] -= abs(self.y) / 100
-            self.degPos[1] -= math.degrees(abs(self.y) / 100)
-            if self.currentPos[1]<=0.1:
-                self.currentPos[1]=0.1
-            if self.degPos[1]<=0.1:
-                self.degPos[1]=0.1
+            self.currentPos[1] -= abs(self.y) / 500
+            self.degPos[1] -= abs(self.y) / 500
+            if self.currentPos[1]<=0.0:
+                self.currentPos[1]=0.0
+            if self.degPos[1]<=0.0:
+                self.degPos[1]=0.0
 
         if self.up == 1.0:
             self.currentPos[2] = 0.08
@@ -133,6 +133,7 @@ class Joy_operation(Node):
         self.pos_publisher.publish(pos_data)
         degpos_data = Float32MultiArray()
         degpos_data.data = self.degPos
+        degpos_data.data[1]*=1000
         self.degpos_publisher.publish(degpos_data)
 
 
