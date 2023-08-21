@@ -27,22 +27,11 @@ def generate_launch_description():
             name='xy_to_rtheta',
             arguments=[urdf]),
 
-        # Node(
-        #     package="cal_rtheta",
-        #     executable='joy_operation',
-        #     name='joy_operation',
-        #     arguments=[urdf]),
         
         # Node(
         #     package="cal_rtheta",
         #     executable='joysub_cal',
         #     name='joysub_cal',
-        #     arguments=[urdf]),
-
-        # Node(
-        #     package="cal_rtheta",
-        #     executable='convert',
-        #     name='convert',
         #     arguments=[urdf]),
 
         Node(

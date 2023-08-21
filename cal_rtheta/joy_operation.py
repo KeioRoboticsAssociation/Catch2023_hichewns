@@ -51,10 +51,18 @@ class Joy_operation(Node):
         if self.theta >= 0:
             self.currentPos[0] += self.theta/ 100
             self.degPos[0] += math.degrees(self.theta / 100)
+            if self.currentPos[0]>=2*math.pi:
+                self.currentPos[0]=2*math.pi
+            if self.degPos[0]>=360.0:
+                self.degPos[0]=360.0
 
         else:
             self.currentPos[0] -= abs(self.theta) / 100
             self.degPos[0] -= math.degrees(abs(self.theta) / 100)
+            if self.currentPos[0]<=0.0:
+                self.currentPos[0]=0.0
+            if self.degPos[0]<=0.0:
+                self.degPos[0]=0.0
 
         if self.y > 0:
             self.currentPos[1] += self.y / 500
@@ -74,24 +82,35 @@ class Joy_operation(Node):
 
         if self.up == 1.0:
             self.currentPos[2] = 0.08
-            self.degPos[2]=0
+            self.degPos[2]= 0
+            # time.sleep(0.1)
         
         if self.mid == 1.0:
             self.currentPos[2] = 0.04
             self.degPos[2] = 1
+            # time.sleep(0.1)
         
         if self.down == 1.0:
             self.currentPos[2] = -0.08
             self.degPos[2] = 2
+            # time.sleep(0.1)
 
                 
         if self.revarm3 >= 0.0:
             self.currentPos[3] += self.revarm3 / 50
             self.degPos[3] += math.degrees(self.revarm3 / 50)
+            if self.currentPos[3]>=math.pi:
+                self.currentPos[3]=math.pi
+            if self.degPos[3]>=180.0:
+                self.degPos[3]=180.0
 
         else:
             self.currentPos[3] -= abs(self.revarm3) / 50
             self.degPos[3] -= math.degrees(abs(self.revarm3) / 50)
+            if self.currentPos[3]<=0.0:
+                self.currentPos[3]=0.0
+            if self.degPos[3]<=0.0:
+                self.degPos[3]=0.0
 
         if self.catch==1.0:
             self.grasp.data = True
