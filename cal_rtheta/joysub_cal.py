@@ -18,9 +18,9 @@ class JoySubscriber(Node):
 
         self.data[0] = axes[0]  # revolute (top_linkの回転)左軸左右回転
         self.data[1] = axes[1]  # prismatic (center_linkの直動)右軸上下
-        self.data[2] = float(buttons[0])  # mid
-        self.data[3] = float(buttons[2])  # up
-        self.data[4] = float(buttons[3])  # down
+        self.data[2] = float(buttons[2])  # mid
+        self.data[3] = float(buttons[3])  # up
+        self.data[4] = float(buttons[0])  # down
         self.data[5] = axes[3]  # arm3
         self.data[6] = float(buttons[1])  # hand1-3
         self.data[7] = float(buttons[7])  # initpos

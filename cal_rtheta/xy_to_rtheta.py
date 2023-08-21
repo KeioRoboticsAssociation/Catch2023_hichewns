@@ -4,6 +4,7 @@ from std_msgs.msg import Float32MultiArray
 import math
 import numpy as np
 from geometry_msgs.msg import Point
+from std_msgs.msg import String
 
 MAX_R = 0.48
 
@@ -14,6 +15,7 @@ class XY_to_Rtheta(Node):
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         #self.degpos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
         self.subscription = self.create_subscription(Point, 'input', self.input_callback, 10)
+        self.flag_subscription = self.create_subscription(String, )
         # self.cur_subscription = self.create_subscription(Float32MultiArray, 'current_pos', self.current_pos_callback, 10)
         self.tmr = self.create_timer(0.1, self.callback)
         self.status = 0
@@ -72,13 +74,11 @@ class XY_to_Rtheta(Node):
         degpos_data.data[1] *= 1000
         self.degpos_publisher.publish(degpos_data)
 
-
 def main():
     rclpy.init()
     xy_to_rtheta = XY_to_Rtheta()
     rclpy.spin(xy_to_rtheta)
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()

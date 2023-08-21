@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Bool
 from std_msgs.msg import Float32MultiArray
+from catch2023_interfaces.msg import CreateMessage
 import math
 import time
 
@@ -10,7 +11,8 @@ class Joy_operation(Node):
         super().__init__('joy_operation')
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         self.catch_judge_publisher = self.create_publisher(Bool, 'catch_data', 10)
-        self.degpos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
+        # self.degpos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
+        self.degpos_publisher = self.create_publisher(CreateMessage, 'degpos_data', 10)
         self.subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.tmr = self.create_timer(0.1, self.callback)
         self.status = 0
@@ -27,11 +29,11 @@ class Joy_operation(Node):
         self.release = 0.0
         self.init = 0.0
         self.grasp = Bool()
-        self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     def joy_callback(self, joy_msg):
-        self.r = joy_msg.data[0]
+        self.theta = joy_msg.data[0]
         self.y = joy_msg.data[1]
         self.mid = joy_msg.data[2]
         self.up = joy_msg.data[3]
@@ -42,17 +44,17 @@ class Joy_operation(Node):
         self.catch = joy_msg.data[8]
         self.release = joy_msg.data[9]
   
-        if self.init==1:
-            self.currentPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
-            self.degPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
+        # if self.init==1:
+        #     self.currentPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
+        #     self.degPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
 
-        if self.r >= 0:
-            self.currentPos[0] += self.r / 100
-            self.degPos[0] += math.degrees(self.r / 100)
+        if self.theta >= 0:
+            self.currentPos[0] += self.theta/ 100
+            self.degPos[0] += math.degrees(self.theta / 100)
 
         else:
-            self.currentPos[0] -= abs(self.r) / 100
-            self.degPos[0] -= math.degrees(abs(self.r) / 100)
+            self.currentPos[0] -= abs(self.theta) / 100
+            self.degPos[0] -= math.degrees(abs(self.theta) / 100)
 
         if self.y > 0:
             self.currentPos[1] += self.y / 500
@@ -72,15 +74,15 @@ class Joy_operation(Node):
 
         if self.up == 1.0:
             self.currentPos[2] = 0.08
-            self.degPos[2] = 0.08
+            self.degPos[2]=0
         
         if self.mid == 1.0:
             self.currentPos[2] = 0.04
-            self.degPos[2] = 0.04
+            self.degPos[2] = 1
         
         if self.down == 1.0:
             self.currentPos[2] = -0.08
-            self.degPos[2] = -0.08
+            self.degPos[2] = 2
 
                 
         if self.revarm3 >= 0.0:
@@ -93,9 +95,11 @@ class Joy_operation(Node):
 
         if self.catch==1.0:
             self.grasp.data = True
+            self.degPos[5] = True
         
         if self.release==1.0:
             self.grasp.data = False
+            self.degPos[5] = False
 
         self.catch_judge_publisher.publish(self.grasp)
 
@@ -108,8 +112,6 @@ class Joy_operation(Node):
                     self.currentPos[5] = math.pi/4
                     self.currentPos[6] = math.pi/4
                     self.degPos[4] = math.degrees(math.pi/4)
-                    self.degPos[5] = math.degrees(math.pi/4)
-                    self.degPos[6] = math.degrees(math.pi/4)
                     self.status = 0
                     self.flag = 0
 
@@ -118,8 +120,6 @@ class Joy_operation(Node):
                     self.currentPos[5] = 0.0
                     self.currentPos[6] = 0.0
                     self.degPos[4] = math.degrees(0.0)
-                    self.degPos[5] = math.degrees(0.0)
-                    self.degPos[6] = math.degrees(0.0)
                     self.status = 1
                     self.flag = 0 
 
@@ -131,9 +131,17 @@ class Joy_operation(Node):
         pos_data = Float32MultiArray()
         pos_data.data = self.currentPos
         self.pos_publisher.publish(pos_data)
-        degpos_data = Float32MultiArray()
-        degpos_data.data = self.degPos
-        degpos_data.data[1]*=1000
+
+        degpos_data = CreateMessage()
+        degpos_data.theta = self.degPos[0]
+        degpos_data.r = self.degPos[1]
+        degpos_data.r *= 1000
+        degpos_data.stepper = int(self.degPos[2])
+        degpos_data.armtheta = self.degPos[3]
+        degpos_data.hand= self.degPos[4]
+        degpos_data.judge = bool(self.degPos[5])
+        # degpos_data.data = self.degPos
+        # degpos_data.data[1]*=1000
         self.degpos_publisher.publish(degpos_data)
 
 
