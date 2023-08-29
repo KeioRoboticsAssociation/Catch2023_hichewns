@@ -23,8 +23,9 @@ class XY_to_Rtheta(Node):
         # self.subscription = self.create_subscription(Point, 'input', self.input_callback, 10)
         self.stepper_subscription = self.create_subscription(Int8, 'stepper_cmd', self.stepper_callback,10)
         self.target_subscription = self.create_subscription(Float32MultiArray, 'target_xy',self.target_callback,  10)
+        self.shootingbox_subscripition = self.create_subscription(Float32MultiArray, 'shootingbox_xy', self.shooting_callback,10)
         self.cur_subscription = self.create_subscription(JointState, 'joint_states', self.joint_states_callback, 10)
-        
+        self.init_subscription = self.create_subscription(Bool, 'init', self.init_callback, 10)
         self.tmr = self.create_timer(0.1, self.callback)
         self.status = 0
         self.theta = 0.0
@@ -46,22 +47,93 @@ class XY_to_Rtheta(Node):
         self.cur_y = 0.0
         self.target_x = 0.0
         self.target_y = 0.0
+        self.shooting_x = 0.0
+        self.shooting_y = 0.0
         self.stepper_pos = 0
+    
+    def init_callback(self,init_msg):
+        self.init = init_msg.data
+        if self.init == True:
+            self.currentPos = [math.pi/2, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0]
+            self.degPos = [90.0, 0.0, 0.0, 0.0, 0.0, False]
     
     def joy_callback(self,joy_msg):
         self.catch = joy_msg.data[7]
         self.release = joy_msg.data[8]
+        if self.catch == 1.0:
+            self.degPos[5] = True
+        
+        if self.release == 1.0:
+            self.degPos[5] = False
     
     def target_callback(self, target_msg):
         self.target_x = target_msg.data[0]
         self.target_y = target_msg.data[1]
 
         self.currentPos[0]=math.atan2(self.target_y,self.target_x)
-        self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2)
+        self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
         if self.currentPos[1] >= MAX_R:
             self.currentPos[1] = MAX_R
         elif self.currentPos[1] <= 0.0:
             self.currentPos[1] = 0.0
+
+        self.currentPos[3]=0.0
+        self.currentPos[4]=0.0
+        self.currentPos[5]=0.0
+        self.currentPos[6]=0.0
+
+        self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
+        self.degPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
+        if self.degPos[1] >= MAX_R:
+            self.degPos[1] = MAX_R
+        elif self.degPos[1] <= 0.0:
+            self.degPos[1] = 0.0
+        self.degPos[3]=0.0
+        self.degPos[4]=0.0
+
+        self.dist = math.sqrt((self.target_x - self.cur_x)**2 + (self.target_y - self.cur_y)**2)
+
+        if self.dist <= ERROR:
+            msg = String()
+            msg.data = 'is_ended'
+            self.flag_publisher.publish(msg)
+
+    def shooting_callback(self, shooting_msg):
+        self.shooting_x = shooting_msg.data[0]
+        self.shooting_y = shooting_msg.data[1]
+
+        self.currentPos[0] = math.atan2(self.shooting_y,self.shooting_x)
+        self.currentPos[1] = math.sqrt(self.shooting_x**2 +self.shooting_y**2) - 0.407
+        if self.currentPos[1] >= MAX_R:
+            self.currentPos[1] = MAX_R
+        elif self.currentPos[1] <= 0.0:
+            self.currentPos[1] = 0.0
+
+        self.currentPos[3]=0.0
+        self.currentPos[4]=0.0
+        self.currentPos[5]=0.0
+        self.currentPos[6]=0.0
+
+        self.degPos[0] = math.degrees(math.atan2(self.shooting_y,self.shooting_x))
+        self.degPos[1] = math.sqrt(self.shooting_x**2+self.shooting_y**2) - 0.407
+        if self.degPos[1] >= MAX_R:
+            self.degPos[1] = MAX_R
+        elif self.degPos[1] <= 0.0:
+            self.degPos[1] = 0.0
+        self.degPos[3]=0.0
+        self.degPos[4]=0.0
+
+        self.dist = math.sqrt((self.shooting_x - self.cur_x)**2 + (self.shooting_y - self.cur_y)**2)
+
+        if self.dist <= ERROR:
+            msg = String()
+            msg.data = 'is_ended'
+            self.flag_publisher.publish(msg)
+        
+    
+    def stepper_callback(self,msg):
+        self.stepper_pos = msg.data
+        self.degPos[2]= self.stepper_pos
 
         if self.stepper_pos == 0:
             self.currentPos[2] = 0.08
@@ -71,37 +143,6 @@ class XY_to_Rtheta(Node):
         
         if self.stepper_pos == 2:
             self.currentPos[2] = -0.08
-
-        self.currentPos[3]=0.0
-        self.currentPos[4]=0.0
-        self.currentPos[5]=0.0
-        self.currentPos[6]=0.0
-
-        self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
-        self.degPos[1]=math.sqrt(self.target_x**2+self.target_y**2)
-        if self.degPos[1] >= MAX_R:
-            self.degPos[1] = MAX_R
-        elif self.degPos[1] <= 0.0:
-            self.degPos[1] = 0.0
-        self.degPos[2]= self.stepper_pos
-        self.degPos[3]=0.0
-        self.degPos[4]=0.0
-
-        if self.catch == 1.0:
-            self.degPos[5] = True
-        
-        if self.release == 1.0:
-            self.degPos[5] = False
-
-        self.dist = math.sqrt((self.target_x - self.cur_x)**2 + (self.target_y - self.cur_y)**2)
-
-        if self.dist <= ERROR:
-            msg = String()
-            msg.data = 'is_ended'
-            self.flag_publisher.publish(msg)
-    
-    def stepper_callback(self,msg):
-        self.stepper_pos = msg.data
     
         
     def joint_states_callback(self,joint_msg):
