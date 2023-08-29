@@ -40,13 +40,8 @@ class Joy_operation(Node):
         self.down = joy_msg.data[4]
         self.revarm3 = joy_msg.data[5]
         self.rev = joy_msg.data[6]
-        self.init = joy_msg.data[7]
-        self.catch = joy_msg.data[8]
-        self.release = joy_msg.data[9]
-  
-        # if self.init==1:
-        #     self.currentPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
-        #     self.degPos=[0.0, 0.1, 0.08, 0.0, 0.0, 0.0]
+        self.catch = joy_msg.data[7]
+        self.release = joy_msg.data[8]
 
         if self.theta >= 0:
             self.currentPos[0] += self.theta/ 100
@@ -121,8 +116,6 @@ class Joy_operation(Node):
             self.degPos[5] = False
 
         self.catch_judge_publisher.publish(self.grasp)
-
-
         
         if self.rev == 1.0:
             if self.flag == 1:

@@ -10,7 +10,7 @@ class JoySubscriber(Node):
         self.subscription = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
         self.publisher_ = self.create_publisher(Float32MultiArray, 'joy_data', 10)
         self.tmr = self.create_timer(0.005, self.callback)
-        self.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     def joy_callback(self, joy_msg):
         axes = joy_msg.axes
@@ -23,9 +23,11 @@ class JoySubscriber(Node):
         self.data[4] = float(buttons[0])  # down
         self.data[5] = axes[3]  # arm3
         self.data[6] = float(buttons[1])  # hand1-3
-        self.data[7] = float(buttons[7])  # initpos
-        self.data[8] = float(buttons[4])  # catch
-        self.data[9] = float(buttons[5])  # release
+        self.data[7] = float(buttons[4])  # catch
+        self.data[8] = float(buttons[5])  # release
+
+        self.data[9] = float(buttons[7])  
+        self.data[10] = float(buttons[6])
 
 
     def callback(self):

@@ -23,16 +23,22 @@ def generate_launch_description():
 
         Node(
             package="cal_rtheta",
+            executable='state',
+            name='state',
+            arguments=[urdf]),
+
+        Node(
+            package="cal_rtheta",
             executable='xy_to_rtheta',
             name='xy_to_rtheta',
             arguments=[urdf]),
 
         
-        # Node(
-        #     package="cal_rtheta",
-        #     executable='joysub_cal',
-        #     name='joysub_cal',
-        #     arguments=[urdf]),
+        Node(
+            package="cal_rtheta",
+            executable='joysub_cal',
+            name='joysub_cal',
+            arguments=[urdf]),
 
         Node(
             package='robot_state_publisher',
