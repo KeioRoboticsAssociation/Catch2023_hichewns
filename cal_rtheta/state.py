@@ -18,8 +18,10 @@ class State(Node):
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
         self.servo_publisher = self.create_publisher(Int8, 'servo_cmd', 10)
         self.target_publisher = self.create_publisher(Float32MultiArray, 'target_xy', 10)
-        self.shootingbox_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy', 10)
+        self.shootingbox_theta_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy_theta', 10)
+        self.shootingbox_r_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy_r', 10)
         self.init_publisher = self.create_publisher(Bool, 'init', 10)
+        self.move_publisher = self.create_publisher(Bool, 'move_cmd', 10)
         self.tmr = self.create_timer(0.1, self.callback)
         self.red_own_target = [[0.395,0.100],[0.395,0.300],[0.395,0.500],[0.395,-0.100],[0.395,-0.300],[0.395,-0.500], [0.895,0.420],[0.895, 0.0],[0.895,-0.420]]
         #self.red_com_target = [[],[],[],[],]
@@ -30,6 +32,7 @@ class State(Node):
         self.init = False
         self.stepper_cmd = 0
         self.servo_cmd = 1
+        self.move_cmd = False
         self.is_ended = False
         self.state_data = [0,0,0]
         self.catched = False
@@ -49,14 +52,14 @@ class State(Node):
         if self.next == 1:
             self.state += 1
             time.sleep(0.5)
-            if self.state > 4:
+            if self.state > 7:
                 self.state = 1
         
         if self.back == 1:
             self.state -= 1
             time.sleep(0.5)
             if self.state < 1:
-                self.state = 4
+                self.state = 7
         
         if self.init_cmd == 1:
             self.state = 0
@@ -67,6 +70,7 @@ class State(Node):
             init_msg = Bool()
             init_msg.data = True
             self.init_publisher.publish(init_msg)
+
         elif self.state == 1:
             # self.stepper_cmd = 0
             target_xy = Float32MultiArray()
@@ -85,22 +89,31 @@ class State(Node):
         elif self.state == 2:
             # self.is_ended = False
             self.stepper_cmd = 2
-            if self.catched == True:
+        
+        elif self.state == 3:
                 self.stepper_cmd = 1
+                self.move_cmd = True
             # self.state = 3
             
-        elif self.state == 3:
-            # time.sleep(0.1)
-            shooting_xy = Float32MultiArray()
-            shooting_xy.data = self.red_shooting_box[self.box]
-            self.shootingbox_publisher.publish(shooting_xy)
-            #  self.state=4
-
         elif self.state == 4:
+            # time.sleep(0.1)
+            self.move_cmd = False
+            shooting_xy_theta = Float32MultiArray()
+            shooting_xy_theta.data = self.red_shooting_box[self.box]
+            self.shootingbox_theta_publisher.publish(shooting_xy_theta)
+            #  self.state=4
+        
+        elif self.state == 5:
+            shooting_xy_r = Float32MultiArray()
+            shooting_xy_r.data = self.red_shooting_box[self.box]
+            self.shootingbox_r_publisher.publish(shooting_xy_r)
+
+        elif self.state == 6:
             self.stepper_cmd = 2
             if self.catched == False:
                 self.stepper_cmd = 1
-                time.sleep(0.5)
+
+        elif self.state == 7:
                 self.state = 1
                 self.cnt += 1
                 self.box += 1
@@ -120,6 +133,10 @@ class State(Node):
         stepper_data = Int8()
         stepper_data.data = self.stepper_cmd
         self.stepper_publisher.publish(stepper_data)
+
+        move_cmd = Bool()
+        move_cmd.data = self.move_cmd
+        self.move_publisher.publish(move_cmd)
         
         
 def main():
