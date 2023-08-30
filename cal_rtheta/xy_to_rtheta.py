@@ -77,10 +77,10 @@ class XY_to_Rtheta(Node):
         elif self.currentPos[1] <= 0.0:
             self.currentPos[1] = 0.0
 
-        self.currentPos[3]=0.0
-        self.currentPos[4]=0.0
-        self.currentPos[5]=0.0
-        self.currentPos[6]=0.0
+        self.currentPos[3]=((math.pi / 2) - self.currentPos[0]) + math.pi/4
+        self.currentPos[4]=math.pi/4
+        self.currentPos[5]=math.pi/4
+        self.currentPos[6]=math.pi/4
 
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
         self.degPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
@@ -88,8 +88,9 @@ class XY_to_Rtheta(Node):
             self.degPos[1] = MAX_R
         elif self.degPos[1] <= 0.0:
             self.degPos[1] = 0.0
-        self.degPos[3]=0.0
-        self.degPos[4]=0.0
+        # self.degPos[3]=0.0
+        self.degPos[3] = (90 - self.degPos[0]) + 45
+        self.degPos[4]=45.0
 
         self.dist = math.sqrt((self.target_x - self.cur_x)**2 + (self.target_y - self.cur_y)**2)
 

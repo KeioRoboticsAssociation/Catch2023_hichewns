@@ -42,31 +42,26 @@ class State(Node):
     def joy_callback(self,joy_msg):
         self.next = joy_msg.data[9]
         self.back = joy_msg.data[10]
-        # self.init_cmd =joy_msg.data[11]
+        self.init_cmd =joy_msg.data[11]
 
         if self.next == 1:
             self.state += 1
             time.sleep(0.5)
             if self.state > 4:
-                self.state = 0
+                self.state = 1
         
         if self.back == 1:
             self.state -= 1
             time.sleep(0.5)
-            if self.state < 0:
+            if self.state < 1:
                 self.state = 4
         
-        # if self.init_cmd == 1:
-        #     self.init = True
+        if self.init_cmd == 1:
+            self.state = 0
 
     
     def callback(self):
-        if self.state == 0:
-            init_msg = Bool()
-            init_msg.data = True
-            self.init_publisher.publish(init_msg)
-
-        elif self.state == 1:
+        if self.state == 1:
             self.stepper_cmd = 0
             target_xy = Float32MultiArray()
             target_xy.data = self.red_own_target[self.cnt]
@@ -92,6 +87,7 @@ class State(Node):
             self.stepper_cmd = 2
             if self.catched == False:
                 self.stepper_cmd = 1
+                time.sleep(0.5)
                 self.state = 1
                 self.cnt += 1
                 self.box += 1
@@ -99,6 +95,11 @@ class State(Node):
                     self.cnt = 0
                 if self.box > 5:
                     self.box = 0
+        
+        if self.state == 0:
+            init_msg = Bool()
+            init_msg.data = True
+            self.init_publisher.publish(init_msg)
 
         
         #state_publish
