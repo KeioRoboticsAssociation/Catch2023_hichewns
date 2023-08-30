@@ -16,11 +16,12 @@ class State(Node):
         self.flag_subscription = self.create_subscription(String, 'is_ended', self.is_ended_callback, 10)
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
+        self.servo_publisher = self.create_publisher(Int8, 'servo_cmd', 10)
         self.target_publisher = self.create_publisher(Float32MultiArray, 'target_xy', 10)
         self.shootingbox_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy', 10)
         self.init_publisher = self.create_publisher(Bool, 'init', 10)
         self.tmr = self.create_timer(0.1, self.callback)
-        self.red_own_target = [[0.395,0.100],[0.395,0.300],[0.395,0.500],[0.395,-0.100],[0.395,-0.300],[0.395,-0.500]]
+        self.red_own_target = [[0.395,0.100],[0.395,0.300],[0.395,0.500],[0.395,-0.100],[0.395,-0.300],[0.395,-0.500], [0.895,0.420],[0.895, 0.0],[0.895,-0.420]]
         #self.red_com_target = [[],[],[],[],]
         self.red_shooting_box = [[0.0 ,0.663],[-0.025 ,0.663],[-0.220,0.663],[-0.245,0.663],[-0.440,0.663],[-0.465,0.663]]
         self.state = 0
@@ -28,6 +29,7 @@ class State(Node):
         self.box = 0
         self.init = False
         self.stepper_cmd = 0
+        self.servo_cmd = 1
         self.is_ended = False
         self.state_data = [0,0,0]
         self.catched = False
@@ -61,11 +63,22 @@ class State(Node):
 
     
     def callback(self):
-        if self.state == 1:
-            self.stepper_cmd = 0
+        if self.state == 0:
+            init_msg = Bool()
+            init_msg.data = True
+            self.init_publisher.publish(init_msg)
+        elif self.state == 1:
+            # self.stepper_cmd = 0
             target_xy = Float32MultiArray()
             target_xy.data = self.red_own_target[self.cnt]
             self.target_publisher.publish(target_xy)
+            servo_cmd = Int8()
+            if self.cnt <= 5:
+                self.servo_cmd = 1
+            if self.cnt > 5:
+                self.servo_cmd = 0
+            servo_cmd.data = self.servo_cmd
+            self.servo_publisher.publish(servo_cmd)
             # if self.is_ended == True:
                 # self.state = 2
         
@@ -91,15 +104,10 @@ class State(Node):
                 self.state = 1
                 self.cnt += 1
                 self.box += 1
-                if self.cnt > 5:
+                if self.cnt > 8:
                     self.cnt = 0
                 if self.box > 5:
                     self.box = 0
-        
-        if self.state == 0:
-            init_msg = Bool()
-            init_msg.data = True
-            self.init_publisher.publish(init_msg)
 
         
         #state_publish
