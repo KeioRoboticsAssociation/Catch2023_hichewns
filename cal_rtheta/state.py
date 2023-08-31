@@ -18,8 +18,8 @@ class State(Node):
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
         self.servo_publisher = self.create_publisher(Int8, 'servo_cmd', 10)
         self.target_publisher = self.create_publisher(Float32MultiArray, 'target_xy', 10)
-        self.shootingbox_theta_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy_theta', 10)
-        self.shootingbox_r_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy_r', 10)
+        self.shootingbox_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy', 10)
+        # self.shootingbox_r_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy_r', 10)
         self.init_publisher = self.create_publisher(Bool, 'init', 10)
         self.move_publisher = self.create_publisher(Bool, 'move_cmd', 10)
         self.tmr = self.create_timer(0.1, self.callback)
@@ -101,20 +101,24 @@ class State(Node):
             self.move_cmd = False
             shooting_xy_theta = Float32MultiArray()
             shooting_xy_theta.data = self.red_shooting_box[self.box]
-            self.shootingbox_theta_publisher.publish(shooting_xy_theta)
+            self.shootingbox_publisher.publish(shooting_xy_theta)
             #  self.state=4
         
-        elif self.state == 5:
-            shooting_xy_r = Float32MultiArray()
-            shooting_xy_r.data = self.red_shooting_box[self.box]
-            self.shootingbox_r_publisher.publish(shooting_xy_r)
+        # elif self.state == 5:
+        #     shooting_xy_r = Float32MultiArray()
+        #     shooting_xy_r.data = self.red_shooting_box[self.box]
+        #     self.shootingbox_r_publisher.publish(shooting_xy_r)
 
-        elif self.state == 6:
+        elif self.state == 5:
             self.stepper_cmd = 2
             if self.catched == False:
                 self.stepper_cmd = 1
 
+        elif self.state == 6:
+                self.move_cmd = True
+        
         elif self.state == 7:
+                self.move_cmd = False
                 self.state = 1
                 self.cnt += 1
                 self.box += 1
@@ -122,6 +126,7 @@ class State(Node):
                     self.cnt = 0
                 if self.box > 5:
                     self.box = 0
+        
 
         
         #state_publish
