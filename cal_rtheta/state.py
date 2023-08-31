@@ -67,6 +67,7 @@ class State(Node):
     
     def callback(self):
         if self.state == 0:
+            self.stepper_cmd = 0
             init_msg = Bool()
             init_msg.data = True
             self.init_publisher.publish(init_msg)

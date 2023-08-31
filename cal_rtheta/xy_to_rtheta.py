@@ -95,17 +95,18 @@ class XY_to_Rtheta(Node):
     def move_callback(self,move_msg):
         self.move_cmd = move_msg.data
         if self.move_cmd == True:
-            self.currentPos[1] = 0.10
-            if self.currentPos[1] >= MAX_R:
-                self.currentPos[1] = MAX_R
-            elif self.currentPos[1] <= 0.0:
-                self.currentPos[1] = 0.0
+            if self.degPos[1] > 0.10:
+                self.currentPos[1] = 0.10
+                if self.currentPos[1] >= MAX_R:
+                    self.currentPos[1] = MAX_R
+                elif self.currentPos[1] <= 0.0:
+                    self.currentPos[1] = 0.0
 
-            self.degPos[1] = 0.10
-            if self.degPos[1] >= MAX_R:
-                self.degPos[1] = MAX_R
-            elif self.degPos[1] <= 0.0:
-                self.degPos[1] = 0.0
+                self.degPos[1] = 0.10
+                if self.degPos[1] >= MAX_R:
+                    self.degPos[1] = MAX_R
+                elif self.degPos[1] <= 0.0:
+                    self.degPos[1] = 0.0
             
     def target_callback(self, target_msg):
         self.target_x = target_msg.data[0]
@@ -140,13 +141,13 @@ class XY_to_Rtheta(Node):
 
         self.currentPos[0] = math.atan2(self.shooting_y,self.shooting_x)
 
-        self.currentPos[3]=0.0
+        self.currentPos[3]=-(self.currentPos[0] - math.pi/2)
         self.currentPos[4]=0.0
         self.currentPos[5]=0.0
         self.currentPos[6]=0.0
 
         self.degPos[0] = math.degrees(math.atan2(self.shooting_y,self.shooting_x))
-        self.degPos[3]=0.0
+        self.degPos[3]=-(self.degPos[0] - 90.0)
         self.degPos[4]=0.0
 
         self.dist = math.sqrt((self.shooting_x - self.cur_x)**2 + (self.shooting_y - self.cur_y)**2)
