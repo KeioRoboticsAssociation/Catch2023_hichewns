@@ -5,6 +5,7 @@ from std_msgs.msg import Bool
 from std_msgs.msg import String
 from std_msgs.msg import Float32MultiArray
 from sensor_msgs.msg import JointState
+from std_msgs.msg import Float32
 from catch2023_interfaces.msg import CreateMessage
 import math
 
@@ -18,6 +19,7 @@ class XY_to_Rtheta(Node):
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
         #subscriber
+        self.target_error_publisher = self.create_publisher(Int8, 'target_error', 10)
         self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.stepper_subscription = self.create_subscription(Int8, 'stepper_cmd', self.stepper_callback,10)
         self.servo_subscription = self.create_subscription(Int8, 'servo_cmd', self.servo_callback,10)
@@ -123,6 +125,25 @@ class XY_to_Rtheta(Node):
         self.currentPos[0]=math.atan2(self.target_y,self.target_x)
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
 
+        self.target_error = self.degPos[0] - self.real_theta
+        target_error = Int8()
+        target_error.data = self.target_error
+        self.target_error_publisher.publish(target_error)
+        # self.target_error = self.degPos[0] - 10.0
+
+        if self.target_error <= self.ERROR_theta:
+            self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
+            if self.currentPos[1] >= MAX_R:
+                self.currentPos[1] = MAX_R
+            elif self.currentPos[1] <= 0.0:
+                self.currentPos[1] = 0.0
+
+            self.degPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
+            if self.degPos[1] >= MAX_R:
+                self.degPos[1] = MAX_R
+            elif self.degPos[1] <= 0.0:
+                self.degPos[1] = 0.0
+
     
     def shooting_callback(self, shooting_msg):
         self.shooting_x = shooting_msg.data[0]
@@ -138,6 +159,21 @@ class XY_to_Rtheta(Node):
         self.degPos[0] = math.degrees(math.atan2(self.shooting_y,self.shooting_x))
         self.degPos[3]=-(self.degPos[0] - 90.0)
         self.degPos[4]=0.0
+
+        self.shooting_error = self.degPos[0] - self.real_theta
+        # self.shooting_error = self.degPos[0] - 100.0
+        if self.shooting_error <= self.ERROR_theta:
+            self.currentPos[1] = math.sqrt(self.shooting_x**2 +self.shooting_y**2) - 0.407
+            if self.currentPos[1] >= MAX_R:
+                self.currentPos[1] = MAX_R
+            elif self.currentPos[1] <= 0.0:
+                self.currentPos[1] = 0.0
+
+            self.degPos[1] = math.sqrt(self.shooting_x**2+self.shooting_y**2) - 0.407
+            if self.degPos[1] >= MAX_R:
+                self.degPos[1] = MAX_R
+            elif self.degPos[1] <= 0.0:
+                self.degPos[1] = 0.0
 
 
     # def shooting_theta_callback(self, shooting_msg):
@@ -200,38 +236,6 @@ class XY_to_Rtheta(Node):
         self.cur_y = self.r * math.sin(self.theta)
     
     def callback(self):
-
-        self.target_error = self.degPos[0] - self.real_theta
-        print(self.target_error)
-        # self.target_error = self.degPos[0] - 10.0
-
-        if self.target_error <= self.ERROR_theta:
-            self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
-            if self.currentPos[1] >= MAX_R:
-                self.currentPos[1] = MAX_R
-            elif self.currentPos[1] <= 0.0:
-                self.currentPos[1] = 0.0
-
-            self.degPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
-            if self.degPos[1] >= MAX_R:
-                self.degPos[1] = MAX_R
-            elif self.degPos[1] <= 0.0:
-                self.degPos[1] = 0.0
-
-        self.shooting_error = self.degPos[0] - self.real_theta
-        # self.shooting_error = self.degPos[0] - 100.0
-        if self.shooting_error <= self.ERROR_theta:
-            self.currentPos[1] = math.sqrt(self.shooting_x**2 +self.shooting_y**2) - 0.407
-            if self.currentPos[1] >= MAX_R:
-                self.currentPos[1] = MAX_R
-            elif self.currentPos[1] <= 0.0:
-                self.currentPos[1] = 0.0
-
-            self.degPos[1] = math.sqrt(self.shooting_x**2+self.shooting_y**2) - 0.407
-            if self.degPos[1] >= MAX_R:
-                self.degPos[1] = MAX_R
-            elif self.degPos[1] <= 0.0:
-                self.degPos[1] = 0.0
 
         pos_data = Float32MultiArray()
         pos_data.data = self.currentPos

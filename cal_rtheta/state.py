@@ -73,7 +73,6 @@ class State(Node):
             self.init_publisher.publish(init_msg)
 
         elif self.state == 1:
-            # self.stepper_cmd = 0
             target_xy = Float32MultiArray()
             target_xy.data = self.red_own_target[self.cnt]
             self.target_publisher.publish(target_xy)
@@ -84,8 +83,7 @@ class State(Node):
                 self.servo_cmd = 0
             servo_cmd.data = self.servo_cmd
             self.servo_publisher.publish(servo_cmd)
-            # if self.is_ended == True:
-                # self.state = 2
+
         
         elif self.state == 2:
             # self.is_ended = False
