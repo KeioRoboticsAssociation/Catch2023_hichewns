@@ -126,9 +126,9 @@ class XY_to_Rtheta(Node):
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
 
         self.target_error = self.degPos[0] - self.real_theta
-        target_error = Int8()
-        target_error.data = self.target_error
-        self.target_error_publisher.publish(target_error)
+        targeterror = Int8()
+        targeterror.data = self.target_error
+        self.target_error_publisher.publish(targeterror)
         # self.target_error = self.degPos[0] - 10.0
 
         if self.target_error <= self.ERROR_theta:
