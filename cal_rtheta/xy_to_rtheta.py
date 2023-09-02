@@ -129,11 +129,13 @@ class XY_to_Rtheta(Node):
         self.currentPos[0]=math.atan2(self.target_y,self.target_x)
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
 
-        self.target_error[0] = float(self.degPos[0] - self.real_theta)
-        # self.target_error = self.degPos[0] - self.real_theta
-        
+        self.target_error = self.degPos[0] - self.real_theta
+        targeterror = Int8()
+        targeterror.data = self.target_error
+        self.target_error_publisher.publish(targeterror)
+        # self.target_error = self.degPos[0] - 10.0
 
-        if self.target_error[0] <= self.ERROR_theta:
+        if self.target_error <= self.ERROR_theta:
             self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
             if self.currentPos[1] >= MAX_R:
                 self.currentPos[1] = MAX_R
