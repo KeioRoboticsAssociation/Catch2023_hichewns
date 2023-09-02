@@ -29,7 +29,11 @@ setup(
             'input = cal_rtheta.input:main',
             'convert = cal_rtheta.convert:main',
             'state = cal_rtheta.state:main',
-            'xy_to_rtheta = cal_rtheta.xy_to_rtheta:main'
+            'xy_to_rtheta = cal_rtheta.xy_to_rtheta:main',
+
+            'index = cal_rtheta.index:main',
+            'state_copy = cal_rtheta.state_copy:main',
+            'xy_to_rtheta_copy = cal_rtheta.xy_to_rtheta_copy:main'
         ],
     },
 )

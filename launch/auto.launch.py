@@ -23,15 +23,27 @@ def generate_launch_description():
 
         Node(
             package="cal_rtheta",
-            executable='state',
-            name='state',
+            executable='state_copy',
+            name='state_copy',
             arguments=[urdf]),
-
+        
         Node(
             package="cal_rtheta",
-            executable='xy_to_rtheta',
-            name='xy_to_rtheta',
+            executable='xy_to_rtheta_copy',
+            name='xy_to_rtheta_copy',
             arguments=[urdf]),
+
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='state',
+        #     name='state',
+        #     arguments=[urdf]),
+
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='xy_to_rtheta',
+        #     name='xy_to_rtheta',
+        #     arguments=[urdf]),
 
         
         Node(

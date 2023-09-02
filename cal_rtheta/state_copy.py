@@ -19,13 +19,13 @@ class State(Node):
         self.servo_publisher = self.create_publisher(Int8, 'servo_cmd', 10)
         self.target_publisher = self.create_publisher(Float32MultiArray, 'target_xy', 10)
         self.shootingbox_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy', 10)
-        # self.shootingbox_r_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy_r', 10)
         self.init_publisher = self.create_publisher(Bool, 'init', 10)
         self.move_publisher = self.create_publisher(Bool, 'move_cmd', 10)
         self.tmr = self.create_timer(0.1, self.callback)
+
         self.red_own_target = [[0.395,0.100],[0.395,0.300],[0.395,0.500],[0.395,-0.100],[0.395,-0.300],[0.395,-0.500], [0.895,0.420],[0.895, 0.0],[0.895,-0.420]]
-        #self.red_com_target = [[],[],[],[],]
         self.red_shooting_box = [[0.0 ,0.663],[-0.025 ,0.663],[-0.220,0.663],[-0.245,0.663],[-0.440,0.663],[-0.465,0.663]]
+        self.theta = 0.0
         self.state = 0
         self.cnt = 0
         self.box = 0
@@ -34,6 +34,8 @@ class State(Node):
         self.servo_cmd = 1
         self.move_cmd = False
         self.is_ended = False
+        self.target_cmd = False
+        self.shooting_cmd = False
         self.state_data = [0,0,0]
         self.catched = False
      
@@ -73,20 +75,17 @@ class State(Node):
             self.init_publisher.publish(init_msg)
 
         elif self.state == 1:
-            for i in range(100):
-                target_xy = Float32MultiArray()
-                target_xy.data = self.red_own_target[self.cnt]
-                self.target_publisher.publish(target_xy)
-                servo_cmd = Int8()
-                if self.cnt <= 5:
-                    self.servo_cmd = 1
-                if self.cnt > 5:
-                    self.servo_cmd = 0
-                servo_cmd.data = self.servo_cmd
-                self.servo_publisher.publish(servo_cmd)
-                i+=1
+            self.target_cmd = True
+            servo_cmd = Int8()
+            if self.cnt <= 5:
+                self.servo_cmd = 1
+            if self.cnt > 5:
+                self.servo_cmd = 0
+            servo_cmd.data = self.servo_cmd
+            self.servo_publisher.publish(servo_cmd)
 
         elif self.state == 2:
+            self.target_cmd = False
             # self.is_ended = False
             self.stepper_cmd = 2
         
@@ -96,27 +95,18 @@ class State(Node):
             # self.state = 3
             
         elif self.state == 4:
-            # time.sleep(0.1)
             self.move_cmd = False
-            for i in range(100):
-                shooting_xy_theta = Float32MultiArray()
-                shooting_xy_theta.data = self.red_shooting_box[self.box]
-                self.shootingbox_publisher.publish(shooting_xy_theta)
-                i+=1
+            self.shooting_cmd = True
             #  self.state=4
-        
-        # elif self.state == 5:
-        #     shooting_xy_r = Float32MultiArray()
-        #     shooting_xy_r.data = self.red_shooting_box[self.box]
-        #     self.shootingbox_r_publisher.publish(shooting_xy_r)
 
         elif self.state == 5:
+            self.shooting_cmd = False
             self.stepper_cmd = 2
             if self.catched == False:
                 self.stepper_cmd = 1
 
         elif self.state == 6:
-                self.move_cmd = True
+            self.move_cmd = True
         
         elif self.state == 7:
                 self.move_cmd = False
@@ -144,6 +134,19 @@ class State(Node):
         move_cmd = Bool()
         move_cmd.data = self.move_cmd
         self.move_publisher.publish(move_cmd)
+
+        
+        if self.target_cmd == True:
+            target_xy = Float32MultiArray()
+            target_xy.data = self.red_own_target[self.cnt]
+            self.target_publisher.publish(target_xy)
+
+        if self.shooting_cmd == True:
+            shooting_xy = Float32MultiArray()
+            shooting_xy.data = self.red_shooting_box[self.box]
+            self.shootingbox_publisher.publish(shooting_xy)
+
+
         
         
 def main():
