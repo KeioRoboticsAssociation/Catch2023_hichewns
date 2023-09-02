@@ -6,6 +6,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     package_dir=get_package_share_directory("cal_rtheta")
     urdf=os.path.join(package_dir,"urdf","catch.urdf")
+    csv=os.path.join(package_dir,"csv","pose.csv")
 
     return LaunchDescription([
 
@@ -21,28 +22,35 @@ def generate_launch_description():
         #     name='input',
         #     arguments=[urdf]),
 
-        Node(
-            package="cal_rtheta",
-            executable='state_copy',
-            name='state_copy',
-            arguments=[urdf]),
-        
-        Node(
-            package="cal_rtheta",
-            executable='xy_to_rtheta_copy',
-            name='xy_to_rtheta_copy',
-            arguments=[urdf]),
-
         # Node(
         #     package="cal_rtheta",
-        #     executable='state',
-        #     name='state',
+        #     executable='index',
+        #     name='index',
         #     arguments=[urdf]),
 
+        Node(
+            package="cal_rtheta",
+            executable='state',
+            name='state',
+            arguments=[urdf]),
+
+
         # Node(
         #     package="cal_rtheta",
-        #     executable='xy_to_rtheta',
-        #     name='xy_to_rtheta',
+        #     executable='state_index',
+        #     name='state_index',
+        #     arguments=[urdf, csv]),
+
+        Node(
+            package="cal_rtheta",
+            executable='xy_to_rtheta',
+            name='xy_to_rtheta',
+            arguments=[urdf]),
+
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='xy_to_rtheta_index',
+        #     name='xy_to_rtheta_index',
         #     arguments=[urdf]),
 
         

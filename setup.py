@@ -13,6 +13,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share',package_name,'launch'),glob('launch/*.py')),
         (os.path.join('share',package_name,'urdf'),glob('urdf/*')),
+        (os.path.join('share',package_name,'csv'),glob('csv/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,14 +27,14 @@ setup(
             'joysub_cal = cal_rtheta.joysub_cal:main',
             'joint_publisher = cal_rtheta.joint_publisher:main',
             'joy_operation = cal_rtheta.joy_operation:main',
+            'index = cal_rtheta.index:main',
             'input = cal_rtheta.input:main',
             'convert = cal_rtheta.convert:main',
             'state = cal_rtheta.state:main',
-            'xy_to_rtheta = cal_rtheta.xy_to_rtheta:main',
-
-            'index = cal_rtheta.index:main',
-            'state_copy = cal_rtheta.state_copy:main',
-            'xy_to_rtheta_copy = cal_rtheta.xy_to_rtheta_copy:main'
+            'state_index = cal_rtheta.state_index:main',
+            'cmd_state = cal_rtheta.cmd_state:main',
+            'xy_to_rtheta_index = cal_rtheta.xy_to_rtheta_index:main',
+            'xy_to_rtheta = cal_rtheta.xy_to_rtheta:main'
         ],
     },
 )

@@ -2,7 +2,8 @@ import os
 import sys
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Int8
+from std_msgs.msg import Int8
+from std_msgs.msg import String
 
 
 def main(args=None):
@@ -15,13 +16,11 @@ def main(args=None):
     msg = Int8()
 
     while rclpy.ok():
-        index=int(input('Enter Index: '))
-        msg.index = index
+        index = int(input('Enter Index: '))
+        msg.data = index
         node.get_logger().info('Publishing: "%s"' % msg)
         publisher.publish(msg)
 
-    node.destroy_node()
-    rclpy.shutdown()
 
 if __name__ == '__main__':
     main() 

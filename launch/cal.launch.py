@@ -6,6 +6,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     package_dir=get_package_share_directory("cal_rtheta")
     urdf=os.path.join(package_dir,"urdf","catch.urdf")
+    csv=os.path.join(package_dir,"csv","pose.csv")
 
     return LaunchDescription([
 
@@ -27,11 +28,11 @@ def generate_launch_description():
             name='joysub_cal',
             arguments=[urdf]),
 
-        Node(
-            package="cal_rtheta",
-            executable='index',
-            name='index',
-            arguments=[urdf]),
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='index',
+        #     name='index',
+        #     arguments=[urdf]),
 
         Node(
             package='robot_state_publisher',
