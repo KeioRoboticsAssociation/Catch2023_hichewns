@@ -28,6 +28,7 @@ setup(
             'joint_publisher = cal_rtheta.joint_publisher:main',
             'joy_operation = cal_rtheta.joy_operation:main',
             'index = cal_rtheta.index:main',
+            'shooting_index = cal_rtheta.shooting_index:main',
             'input = cal_rtheta.input:main',
             'convert = cal_rtheta.convert:main',
             'state = cal_rtheta.state:main',

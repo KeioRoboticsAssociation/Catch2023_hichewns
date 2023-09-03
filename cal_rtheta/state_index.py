@@ -15,10 +15,12 @@ class State(Node):
         super().__init__('state')
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.pose_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
+        self.shooting_index_subscription = self.create_subscription(Int8, 'shooting_index', self.shooting_index_callback, 10)
         # self.degpos_subscription = self.create_subscription(CreateMessage, 'degpos_data', self.degpos_callback, 10)
         # self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.flag_subscription = self.create_subscription(String, 'is_ended', self.is_ended_callback, 10)
         self.target_pose_subscription = self.create_subscription(Float32MultiArray, 'target_pose', self.target_pose_callback,10)
+        self.shooting_pose_subscription = self.create_subscription(Float32MultiArray, 'shooting_pose', self.shooting_pose_callback,10)
 
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
@@ -31,7 +33,7 @@ class State(Node):
 
         # self.red_own_target = [[0.395,0.100],[0.395,0.300],[0.395,0.500],[0.395,-0.100],[0.395,-0.300],[0.395,-0.500], [0.895,0.420],[0.895, 0.0],[0.895,-0.420]]
         self.red_own_target = []
-        self.red_shooting_box = [[0.0 ,0.663],[-0.025 ,0.663],[-0.220,0.663],[-0.245,0.663],[-0.440,0.663],[-0.465,0.663]]
+        self.red_shooting_box = []
         self.theta = 0.0
         self.state = 0
         self.cnt = 0
@@ -53,13 +55,21 @@ class State(Node):
         self.back = False
         with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose.csv', 'r') as f:
             reader = csv.reader(f)
-            header = next(reader)
             for row in reader:
-                self.red_own_target.append([float(row[1]),float(row[2])])
+                self.red_own_target.append([float(row[0]),float(row[1])])
+
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting.csv', 'r') as f:
+            reader1 = csv.reader(f)
+            for row in reader1:
+                self.red_shooting_box.append([float(row[0]),float(row[1])])
     
     def index_callback(self,index_msg):
         self.index = index_msg.data
         self.state = 1
+    
+    def shooting_index_callback(self,shooting_index_msg):
+        self.box = shooting_index_msg.data
+        self.state = 4
      
     def is_ended_callback(self,msg):
         if msg.data == 'is_ended':
@@ -67,7 +77,15 @@ class State(Node):
     
     def target_pose_callback(self,targetpos):
         self.red_own_target[self.index] = targetpos.data
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_pose.csv','w') as f:
+            writer = csv.writer(f)
+            writer.writerows(self.red_own_target)
     
+    def shooting_pose_callback(self,shootingpos):
+        self.red_shooting_box[self.box] = shootingpos.data
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_shooting.csv','w') as f:
+            writer = csv.writer(f)
+            writer.writerows(self.red_shooting_box)
     
     def cmd_state_callback(self, cmd_state):
         if cmd_state.data == 'n':
@@ -109,10 +127,10 @@ class State(Node):
         elif self.state == 1:
             self.target_cmd = True
             servo_cmd = Int8()
-            if self.index < 5:
+            if self.index < 6:
                 self.servo_cmd = 1
 
-            elif self.index >= 5:
+            elif self.index >= 6:
                 self.servo_cmd = 0
             # if self.cnt <= 5:
             #     self.servo_cmd = 1
@@ -150,11 +168,11 @@ class State(Node):
             self.move_cmd = False
             if self.state_cmd == True:
                 self.cnt += 1
-                self.box += 1
+                # self.box += 1
                 if self.cnt > 8:
                     self.cnt = 0
-                if self.box > 5:
-                    self.box = 0
+                # if self.box > 5:
+                #     self.box = 0
                 self.state_cmd = False
            
         #state_publish
