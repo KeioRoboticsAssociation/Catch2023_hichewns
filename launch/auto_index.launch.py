@@ -30,15 +30,14 @@ def generate_launch_description():
 
         Node(
             package="cal_rtheta",
-            executable='state',
-            name='state',
-            arguments=[urdf]),
-
+            executable='state_index',
+            name='state_index',
+            arguments=[urdf, csv]),
 
         Node(
             package="cal_rtheta",
-            executable='xy_to_rtheta',
-            name='xy_to_rtheta',
+            executable='xy_to_rtheta_index',
+            name='xy_to_rtheta_index',
             arguments=[urdf]),
 
         

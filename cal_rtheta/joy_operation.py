@@ -16,7 +16,7 @@ class Joy_operation(Node):
         self.subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.tmr = self.create_timer(0.1, self.callback)
         self.status = 0
-        self.r = 0.0
+        self.theta = 0.0
         self.y = 0.0
         # arm2
         self.up = 0.0

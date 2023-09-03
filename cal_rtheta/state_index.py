@@ -15,9 +15,11 @@ class State(Node):
         super().__init__('state')
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.pose_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
-        self.degpos_subscription = self.create_subscription(CreateMessage, 'degpos_data', self.degpos_callback, 10)
+        # self.degpos_subscription = self.create_subscription(CreateMessage, 'degpos_data', self.degpos_callback, 10)
         # self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.flag_subscription = self.create_subscription(String, 'is_ended', self.is_ended_callback, 10)
+        self.target_pose_subscription = self.create_subscription(Float32MultiArray, 'target_pose', self.target_pose_callback,10)
+
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
         self.servo_publisher = self.create_publisher(Int8, 'servo_cmd', 10)
@@ -63,32 +65,10 @@ class State(Node):
         if msg.data == 'is_ended':
             self.is_ended = True
     
-    def degpos_callback(self,degpos_msg):
-        self.catched = bool(degpos_msg.judge)
-        self.theta = degpos_msg.theta
-        self.r = degpos_msg.r
-        self.cur_x = math.cos(self.theta) * self.r
-        self.cur_y = math.sin(self.theta) * self.r
+    def target_pose_callback(self,targetpos):
+        self.red_own_target[self.index] = targetpos.data
     
-    # def joy_callback(self,joy_msg):
-    #     self.next = joy_msg.data[9]
-    #     self.back = joy_msg.data[10]
-    #     self.init_cmd =joy_msg.data[11]
-
-    #     if self.next == 1:
-    #         self.state += 1
-    #         time.sleep(0.5)
-    #         if self.state > 7:
-    #             self.state = 1
-        
-    #     if self.back == 1:
-    #         self.state -= 1
-    #         time.sleep(0.5)
-    #         if self.state < 1:
-    #             self.state = 7
-        
-    #     if self.init_cmd == 1:
-    #         self.state = 0
+    
     def cmd_state_callback(self, cmd_state):
         if cmd_state.data == 'n':
             self.next = True
@@ -194,8 +174,6 @@ class State(Node):
 
         if self.target_cmd == True:
             target_xy = Float32MultiArray()
-            self.red_own_target[self.index][0] = self.cur_x
-            self.red_own_target[self.index][1] = self.cur_y
             target_xy.data = self.red_own_target[self.index]
             self.target_publisher.publish(target_xy)
 
