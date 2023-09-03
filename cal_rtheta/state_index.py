@@ -53,12 +53,12 @@ class State(Node):
         self.state_cmd = False
         self.next = False
         self.back = False
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose.csv', 'r') as f:
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_red.csv', 'r') as f:
             reader = csv.reader(f)
             for row in reader:
                 self.red_own_target.append([float(row[0]),float(row[1])])
 
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting.csv', 'r') as f:
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting_red.csv', 'r') as f:
             reader1 = csv.reader(f)
             for row in reader1:
                 self.red_shooting_box.append([float(row[0]),float(row[1])])
