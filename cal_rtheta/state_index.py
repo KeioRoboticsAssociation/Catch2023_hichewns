@@ -16,7 +16,7 @@ class State(Node):
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.pose_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
         self.shooting_index_subscription = self.create_subscription(Int8, 'shooting_index', self.shooting_index_callback, 10)
-        # self.degpos_subscription = self.create_subscription(CreateMessage, 'degpos_data', self.degpos_callback, 10)
+        self.degpos_subscription = self.create_subscription(CreateMessage, 'degpos_data', self.degpos_callback, 10)
         # self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.flag_subscription = self.create_subscription(String, 'is_ended', self.is_ended_callback, 10)
         self.target_pose_subscription = self.create_subscription(Float32MultiArray, 'target_pose', self.target_pose_callback,10)
@@ -94,7 +94,7 @@ class State(Node):
         if self.next == True:
             self.state += 1
             time.sleep(0.5)
-            if self.state > 7:
+            if self.state > 4:
                 self.state = 1
             self.next = False
     
@@ -105,7 +105,7 @@ class State(Node):
             self.state -= 1
             time.sleep(0.5)
             if self.state < 1:
-                self.state = 7
+                self.state = 4
             self.back = False
         
         elif cmd_state.data == 'k':
@@ -125,6 +125,9 @@ class State(Node):
             self.init_publisher.publish(init_msg)
 
         elif self.state == 1:
+            self.move_cmd = False
+            # if self.state_cmd == True:
+            #     self.state_cmd = False
             self.target_cmd = True
             servo_cmd = Int8()
             if self.index < 6:
@@ -137,43 +140,50 @@ class State(Node):
             # if self.cnt > 5:
             #     self.servo_cmd = 0
             servo_cmd.data = self.servo_cmd
-            self.servo_publisher.publish(servo_cmd)
+            self.servo_publisher.publish(servo_cmd) 
 
+        # elif self.state == 2:
+        #     self.target_cmd = False
+            # self.is_ended = False
+            # self.stepper_cmd = 2
+        
         elif self.state == 2:
             self.target_cmd = False
-            # self.is_ended = False
-            self.stepper_cmd = 2
-        
-        elif self.state == 3:
-            self.stepper_cmd = 1
+            self.stepper_cmd = 0
+            # time.sleep(2.0)
+            # if self.index >= 7:
             self.move_cmd = True
+            move_cmd = Bool()
+            move_cmd.data = self.move_cmd
+            self.move_publisher.publish(move_cmd)
             # self.state = 3
             
-        elif self.state == 4:
-            self.move_cmd = False
+        elif self.state == 3:
             self.shooting_cmd = True
+            # self.move_cmd = False
+            # self.state = 4
             #  self.state=4
 
-        elif self.state == 5:
+        elif self.state == 4:
             self.shooting_cmd = False
-            self.stepper_cmd = 2
-            if self.catched == False:
-                self.stepper_cmd = 1
-
-        elif self.state == 6:
+            # self.stepper_cmd = 0
+            # if self.catched == False:
             self.move_cmd = True
-            self.state_cmd = True
+            move_cmd = Bool()
+            move_cmd.data = self.move_cmd
+            self.move_publisher.publish(move_cmd)
+            # self.state_cmd = True
+
+        # elif self.state == 6:
+        #     self.move_cmd = True
+            #self.stepper_cmd = 0
+        #     self.move_cmd = True
+        #     self.state_cmd = True
         
-        elif self.state == 7:
-            self.move_cmd = False
-            if self.state_cmd == True:
-                self.cnt += 1
-                # self.box += 1
-                if self.cnt > 8:
-                    self.cnt = 0
-                # if self.box > 5:
-                #     self.box = 0
-                self.state_cmd = False
+        # elif self.state == 6:
+        #     self.move_cmd = False
+        #     if self.state_cmd == True:
+        #         self.state_cmd = False
            
         #state_publish
         self.state_data = [self.state, self.cnt, self.box]
