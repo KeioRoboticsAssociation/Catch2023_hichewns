@@ -16,12 +16,10 @@ class State(Node):
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.pose_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
         self.shooting_index_subscription = self.create_subscription(Int8, 'shooting_index', self.shooting_index_callback, 10)
-        self.degpos_subscription = self.create_subscription(CreateMessage, 'degpos_data', self.degpos_callback, 10)
-        # self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
-        self.flag_subscription = self.create_subscription(String, 'is_ended', self.is_ended_callback, 10)
         self.target_pose_subscription = self.create_subscription(Float32MultiArray, 'target_pose', self.target_pose_callback,10)
         self.shooting_pose_subscription = self.create_subscription(Float32MultiArray, 'shooting_pose', self.shooting_pose_callback,10)
-
+        self.target_comp_subscription = self.create_subscription(Bool, 'target_comp', self.target_comp_callback, 10)
+        self.shooting_comp_subscription = self.create_subscription(Bool, 'shooting_comp', self.shooting_comp_callback, 10)
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
         self.servo_publisher = self.create_publisher(Int8, 'servo_cmd', 10)
@@ -29,9 +27,9 @@ class State(Node):
         self.shootingbox_publisher = self.create_publisher(Float32MultiArray, 'shootingbox_xy', 10)
         self.init_publisher = self.create_publisher(Bool, 'init', 10)
         self.move_publisher = self.create_publisher(Bool, 'move_cmd', 10)
+        self.release_publisher = self.create_publisher(Bool, 'release_cmd', 10)
         self.tmr = self.create_timer(0.1, self.callback)
 
-        # self.red_own_target = [[0.395,0.100],[0.395,0.300],[0.395,0.500],[0.395,-0.100],[0.395,-0.300],[0.395,-0.500], [0.895,0.420],[0.895, 0.0],[0.895,-0.420]]
         self.red_own_target = []
         self.red_shooting_box = []
         self.theta = 0.0
@@ -46,6 +44,8 @@ class State(Node):
         self.target_cmd = False
         self.shooting_cmd = False
         self.state_data = [0,0,0]
+        self.target_comp = False
+        self.shooting_comp = False
         self.catched = False
         self.index = 0
         self.cur_x = 0.0
@@ -53,6 +53,8 @@ class State(Node):
         self.state_cmd = False
         self.next = False
         self.back = False
+        self.release_cmd = False
+        self.catch_cmd = False
         with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_red.csv', 'r') as f:
             reader = csv.reader(f)
             for row in reader:
@@ -65,15 +67,25 @@ class State(Node):
     
     def index_callback(self,index_msg):
         self.index = index_msg.data
+        self.move_cmd = False
         self.state = 1
     
+    def target_comp_callback(self, target_comp_msg):
+        self.target_comp = target_comp_msg.data
+        if self.target_comp == True:
+            # self.target_cmd = False
+            self.state = 2
+    
+    def shooting_comp_callback(self, shooting_comp_msg):
+        self.shooting_comp = shooting_comp_msg.data
+        if self.shooting_comp == True:
+            self.shooting_cmd = False
+            self.state = 6
+
     def shooting_index_callback(self,shooting_index_msg):
         self.box = shooting_index_msg.data
-        self.state = 4
-     
-    def is_ended_callback(self,msg):
-        if msg.data == 'is_ended':
-            self.is_ended = True
+        self.move_cmd = False
+        self.state = 5
     
     def target_pose_callback(self,targetpos):
         self.red_own_target[self.index] = targetpos.data
@@ -94,7 +106,7 @@ class State(Node):
         if self.next == True:
             self.state += 1
             time.sleep(0.5)
-            if self.state > 4:
+            if self.state > 7:
                 self.state = 1
             self.next = False
     
@@ -105,16 +117,17 @@ class State(Node):
             self.state -= 1
             time.sleep(0.5)
             if self.state < 1:
-                self.state = 4
+                self.state = 7
             self.back = False
         
-        elif cmd_state.data == 'k':
+        elif cmd_state.data == 'i':
             self.init = True
 
         if self.init == True:
-            self.state = 0
             self.shooting_cmd = False
             self.target_cmd = False
+            self.move_cmd = False
+            self.state = 0
             self.init = False
 
     def callback(self):
@@ -126,64 +139,44 @@ class State(Node):
 
         elif self.state == 1:
             self.move_cmd = False
-            # if self.state_cmd == True:
-            #     self.state_cmd = False
             self.target_cmd = True
             servo_cmd = Int8()
             if self.index < 6:
                 self.servo_cmd = 1
-
             elif self.index >= 6:
                 self.servo_cmd = 0
-            # if self.cnt <= 5:
-            #     self.servo_cmd = 1
-            # if self.cnt > 5:
-            #     self.servo_cmd = 0
+
             servo_cmd.data = self.servo_cmd
             self.servo_publisher.publish(servo_cmd) 
 
-        # elif self.state == 2:
-        #     self.target_cmd = False
-            # self.is_ended = False
-            # self.stepper_cmd = 2
+            # if self.target_comp == True:
+            # self.state = 2
         
         elif self.state == 2:
-            self.target_cmd = False
-            self.stepper_cmd = 0
-            # time.sleep(2.0)
-            # if self.index >= 7:
-            self.move_cmd = True
-            move_cmd = Bool()
-            move_cmd.data = self.move_cmd
-            self.move_publisher.publish(move_cmd)
-            # self.state = 3
-            
+            self.move_cmd = False
+            self.stepper_cmd = 2
+
         elif self.state == 3:
-            self.shooting_cmd = True
-            # self.move_cmd = False
-            # self.state = 4
-            #  self.state=4
+            self.target_cmd = False
+            self.move_cmd = False
+            self.stepper_cmd = 0
 
         elif self.state == 4:
-            self.shooting_cmd = False
-            # self.stepper_cmd = 0
-            # if self.catched == False:
             self.move_cmd = True
-            move_cmd = Bool()
-            move_cmd.data = self.move_cmd
-            self.move_publisher.publish(move_cmd)
-            # self.state_cmd = True
+            
+        elif self.state == 5:
+            self.move_cmd = False
+            self.shooting_cmd = True
 
-        # elif self.state == 6:
-        #     self.move_cmd = True
-            #self.stepper_cmd = 0
-        #     self.move_cmd = True
-        #     self.state_cmd = True
-        
-        # elif self.state == 6:
-        #     self.move_cmd = False
-        #     if self.state_cmd == True:
-        #         self.state_cmd = False
+        elif self.state == 6:
+            self.release_cmd = True
+            release_cmd = Bool()
+            release_cmd.data = self.release_cmd
+            self.release_publisher.publish(release_cmd)
+
+        elif self.state == 7:
+            self.shooting_cmd = False
+            self.move_cmd = True
            
         #state_publish
         self.state_data = [self.state, self.cnt, self.box]
@@ -196,9 +189,10 @@ class State(Node):
         stepper_data.data = self.stepper_cmd
         self.stepper_publisher.publish(stepper_data)
 
-        move_cmd = Bool()
-        move_cmd.data = self.move_cmd
-        self.move_publisher.publish(move_cmd)
+        if self.move_cmd == True:
+            move_cmd = Bool()
+            move_cmd.data = self.move_cmd
+            self.move_publisher.publish(move_cmd)
 
         if self.target_cmd == True:
             target_xy = Float32MultiArray()

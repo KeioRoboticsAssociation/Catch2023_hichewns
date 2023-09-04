@@ -21,7 +21,7 @@ class XY_to_Rtheta(Node):
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
         #subscriber
-        # self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
+        self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.shooting_error_publisher = self.create_publisher(Float32, 'shooting_error', 10)
         self.target_error_publisher = self.create_publisher(Float32, 'target_error', 10)
         self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
@@ -29,11 +29,14 @@ class XY_to_Rtheta(Node):
         self.servo_subscription = self.create_subscription(Int8, 'servo_cmd', self.servo_callback,10)
         self.target_subscription = self.create_subscription(Float32MultiArray, 'target_xy',self.target_callback,  10)
         self.shootingbox_subscripition = self.create_subscription(Float32MultiArray, 'shootingbox_xy', self.shooting_callback,10)
+        self.release_subscription = self.create_subscription(Bool, 'release_cmd', self.release_callback, 10)
         self.cur_subscription = self.create_subscription(CreateMessage, 'real_pos', self.real_pos_callback, 10)
         self.move_subscription = self.create_subscription(Bool, 'move_cmd', self.move_callback, 10)
         self.init_subscription = self.create_subscription(Bool, 'init', self.init_callback, 10)
         self.target_pose_publisher = self.create_publisher(Float32MultiArray, 'target_pose', 10)
         self.shooting_pose_publisher = self.create_publisher(Float32MultiArray, 'shooting_pose', 10)
+        self.target_comp_publisher = self.create_publisher(Bool, 'target_comp', 10)
+        self.shooting_comp_publisher = self.create_publisher(Bool, 'shooting_comp', 10)
         # self.joint_subscription = self.create_subscription(JointState, 'joint_states', self.joint_states_callback,10)
         
         self.tmr = self.create_timer(0.1, self.callback)
@@ -53,9 +56,14 @@ class XY_to_Rtheta(Node):
         self.real_r = 0.0
         self.real_theta = 0.0
         self.shooting_error = 0.0
-        self.target_error = [0.0]
+        self.shooting_error_r = 0.0
+        self.target_error = 0.0
+        self.target_error_r = 0.0
         self.ERROR_theta = 45.0
-        self.flag = 0 
+        self.flag = 0
+
+        self.target_comp = False
+        self.shooting_comp = False
 
         self.theta = 0.0
         self.y = 0.0
@@ -75,7 +83,11 @@ class XY_to_Rtheta(Node):
     
     def real_pos_callback(self,real_pos_msg):
         self.real_theta = real_pos_msg.theta
-        self.real_r = real_pos_msg.r
+        self.real_r = real_pos_msg.r 
+    
+    def release_callback(self,release_msg):
+        if release_msg.data == True:
+            self.degPos[5] = False
 
     def cmd_state_callback(self,cmd_state_msg):
         if cmd_state_msg.data == 'c':
@@ -130,6 +142,7 @@ class XY_to_Rtheta(Node):
         self.y = joy_msg.data[1]
             
     def target_callback(self, target_msg):
+        self.target_error_r = 0.0
         self.target_x = target_msg.data[0]
         self.target_y = target_msg.data[1]
         self.target_pose = [self.target_x,self.target_y]
@@ -141,17 +154,10 @@ class XY_to_Rtheta(Node):
         self.target_error = abs(self.target_error)
         if self.target_error <= self.ERROR_theta:
             self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
-            # if self.currentPos[1] >= MAX_R:
-            #     self.currentPos[1] = MAX_R
-            # elif self.currentPos[1] <= 0.0:
-            #     self.currentPos[1] = 0.0
 
             self.degPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
-            # if self.degPos[1] >= MAX_R:
-            #     self.degPos[1] = MAX_R
-            # elif self.degPos[1] <= 0.0:
-            #     self.degPos[1] = 0.0
-                    #Joyの計算部分
+            
+            #Joyの計算部分
             if self.theta >= 0:
                 self.currentPos[0] +=  self.theta/ 100
                 self.degPos[0]  += math.degrees(self.theta / 100)
@@ -163,18 +169,10 @@ class XY_to_Rtheta(Node):
             if self.y >= 0:
                 self.currentPos[1] += self.y / 500
                 self.degPos[1] += self.y / 500
-                # if self.currentPos[1]>=0.48:
-                #     self.currentPos[1]=0.48
-                # if self.degPos[1]>=0.48:
-                #     self.degPos[1]=0.48
 
             elif self.y < 0:
                 self.currentPos[1] -= abs(self.y) / 500
                 self.degPos[1] -= abs(self.y) / 500
-                # if self.currentPos[1]<=0.0:
-                #     self.currentPos[1]=0.0
-                # if self.degPos[1]<=0.0:
-                #     self.degPos[1]=0.0
 
             # ここまで
             self.target_pose[0] = math.cos(self.currentPos[0])* (self.degPos[1]+0.407)
@@ -182,13 +180,29 @@ class XY_to_Rtheta(Node):
             targetpose = Float32MultiArray()
             targetpose.data = self.target_pose
             self.target_pose_publisher.publish(targetpose)
+
+            self.target_error_r = float(self.degPos[1] - (self.real_r/1000))
+            self.target_error_r = abs(self.target_error_r)
+            # if self.target_error_r < 0.03 and self.y == 0.0 and self.theta == 0.0:
+            if self.target_error_r <= 0.02 and self.y == 0.0 and self.theta == 0.0:
+            # and self.y == 0.0 and self.theta == 0.0:
+                self.target_comp  = True
+            elif self.target_error_r > 0.02:
+                self.target_comp = False
+            targetcomp = Bool()
+            targetcomp.data = self.target_comp
+            self.target_comp_publisher.publish(targetcomp)
         
-        targeterror = Float32()
-        targeterror.data = self.target_error
-        self.target_error_publisher.publish(targeterror)
+            targeterror = Float32()
+            targeterror.data = self.target_error
+            self.target_error_publisher.publish(targeterror)
+
+
+
 
     
     def shooting_callback(self, shooting_msg):
+        self.shooting_error_r = 0.0
         self.shooting_x = shooting_msg.data[0]
         self.shooting_y = shooting_msg.data[1]
         self.shooting_pose = [self.shooting_x,self.shooting_y]
@@ -218,16 +232,29 @@ class XY_to_Rtheta(Node):
                 self.degPos[1] -= abs(self.y) / 500
 
             # ここまで
-
             self.shooting_pose[0] = math.cos(self.currentPos[0])* (self.degPos[1]+0.407)
             self.shooting_pose[1] = math.sin(self.currentPos[0])* (self.degPos[1]+0.407)
             shootingpose = Float32MultiArray()
             shootingpose.data = self.shooting_pose
             self.shooting_pose_publisher.publish(shootingpose)
+
+            self.shooting_error_r = float(self.degPos[1] - (self.real_r/1000))
+            self.shooting_error_r = abs(self.shooting_error_r)
+            if self.shooting_error_r <= 0.001:
+            # and self.y == 0.0 and self.theta == 0.0:
+                self.shooting_comp = True
+            elif self.shooting_error_r > 0.001:
+                self.shooting_comp = False
+            #     self.degPos[5] = False
+
+            shooting_comp = Bool()
+            shooting_comp.data = self.shooting_comp
+            self.shooting_comp_publisher.publish(shooting_comp)
         
-        shootingerror = Float32()
-        shootingerror.data = self.shooting_error
-        self.shooting_error_publisher.publish(shootingerror)
+            shootingerror = Float32()
+            shootingerror.data = self.shooting_error_r
+            self.shooting_error_publisher.publish(shootingerror)
+        
 
         self.currentPos[3]=-(self.currentPos[0] - math.pi/2)
         self.currentPos[4]=0.0
