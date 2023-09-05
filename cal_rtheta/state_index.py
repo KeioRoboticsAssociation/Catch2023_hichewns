@@ -13,6 +13,7 @@ import math
 class State(Node):
     def __init__(self):
         super().__init__('state')
+        self.real_pos_subscription = self.create_subscription(CreateMessage, 'real_pos', self.real_pos_callback, 10)
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.pose_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
         self.shooting_index_subscription = self.create_subscription(Int8, 'shooting_index', self.shooting_index_callback, 10)
@@ -76,6 +77,9 @@ class State(Node):
             # self.target_cmd = False
             self.state = 2
     
+    def real_pos_callback(self, real_pos_msg):
+        self.stepeer = real_pos_msg.stepper
+    
     def shooting_comp_callback(self, shooting_comp_msg):
         self.shooting_comp = shooting_comp_msg.data
         if self.shooting_comp == True:
@@ -138,6 +142,10 @@ class State(Node):
             self.init_publisher.publish(init_msg)
 
         elif self.state == 1:
+            self.release_cmd = True
+            release_cmd = Bool()
+            release_cmd.data = self.release_cmd
+            self.release_publisher.publish(release_cmd)
             self.move_cmd = False
             self.target_cmd = True
             servo_cmd = Int8()
@@ -160,6 +168,8 @@ class State(Node):
             self.target_cmd = False
             self.move_cmd = False
             self.stepper_cmd = 0
+            if self.stepeer == 0:
+                self.state = 4
 
         elif self.state == 4:
             self.move_cmd = True
@@ -173,6 +183,8 @@ class State(Node):
             release_cmd = Bool()
             release_cmd.data = self.release_cmd
             self.release_publisher.publish(release_cmd)
+            time.sleep(5.0)
+            self.state = 7
 
         elif self.state == 7:
             self.shooting_cmd = False
