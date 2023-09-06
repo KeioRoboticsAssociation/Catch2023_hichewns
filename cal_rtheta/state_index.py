@@ -73,29 +73,6 @@ class State(Node):
             for row in reader1:
                 self.red_shooting_box.append([float(row[0]),float(row[1])])
 
-        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_blue.csv', 'r') as f:
-        #     reader = csv.reader(f)
-        #     for row in reader:
-        #         self.red_own_target.append([float(row[0]),float(row[1])])
-
-        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting_blue.csv', 'r') as f:
-        #     reader1 = csv.reader(f)
-        #     for row in reader1:
-        #         self.red_shooting_box.append([float(row[0]),float(row[1])])
-    
-    # def joy_callback(self,joy_msg):
-    #     if joy_msg.data[2] == 1.0:
-    #         if self.manual_flag == True:
-    #             self.is_manual = True
-    #             self.manual_flag = False
-
-    #         elif self.manual_flag == False:
-    #             self.is_manual = False
-    #             self.manual_flag = True
-
-    #     is_manual = Bool()
-    #     is_manual.data = self.is_manual
-    #     self.is_manual_publisher.publish(is_manual)
 
     def is_manual_callback(self,manualmsg):
         self.is_manual = manualmsg.data
@@ -107,8 +84,8 @@ class State(Node):
     
     def target_comp_callback(self, target_comp_msg):
         self.target_comp = target_comp_msg.data
-        # if self.target_comp == True:
-            # self.target_cmd = False
+        if self.target_comp == True:
+            self.target_cmd = False
             # self.state = 2
     
     def real_pos_callback(self, real_pos_msg):
@@ -176,24 +153,23 @@ class State(Node):
             self.init_publisher.publish(init_msg)
 
         elif self.state == 1:
-            self.release_cmd = True
-            release_cmd = Bool()
-            release_cmd.data = self.release_cmd
-            self.release_publisher.publish(release_cmd)
             self.move_cmd = False
             self.target_cmd = True
-            servo_cmd = Int8()
+            # self.release_cmd = True
+            # release_cmd = Bool()
+            # release_cmd.data = self.release_cmd
+            # self.release_publisher.publish(release_cmd)
             if self.index < 6:
                 self.servo_cmd = 1
             elif self.index >= 6:
                 self.servo_cmd = 0
-
+            servo_cmd = Int8()
             servo_cmd.data = self.servo_cmd
             self.servo_publisher.publish(servo_cmd) 
 
             if self.target_comp == True:
-                if not self.is_manual:
-                    self.state = 2
+                # if not self.is_manual:
+                self.state = 2
         
         elif self.state == 2:
             self.move_cmd = False

@@ -186,7 +186,7 @@ class XY_to_Rtheta(Node):
 
             self.target_error_r = float(self.degPos[1] - (self.real_r/1000))
             self.target_error_r = abs(self.target_error_r)
-            # if self.target_error_r < 0.03 and self.y == 0.0 and self.theta == 0.0:
+
             if self.target_error_r <= 0.02 and self.y == 0.0 and self.theta == 0.0:
             # and self.y == 0.0 and self.theta == 0.0:
                 self.target_comp  = True
