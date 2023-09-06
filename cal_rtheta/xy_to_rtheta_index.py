@@ -19,7 +19,7 @@ class XY_to_Rtheta(Node):
         super().__init__('xy_to_rtheta')
         self.degpos_publisher = self.create_publisher(CreateMessage, 'degpos_data', 10)
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
-        self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
+        # self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
         #subscriber
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.shooting_error_publisher = self.create_publisher(Float32, 'shooting_error', 10)
@@ -88,6 +88,9 @@ class XY_to_Rtheta(Node):
     def release_callback(self,release_msg):
         if release_msg.data == True:
             self.degPos[5] = False
+        
+        elif release_msg.data == False:
+            self.degPos[5] = True
 
     def cmd_state_callback(self,cmd_state_msg):
         if cmd_state_msg.data == 'c':
@@ -197,9 +200,6 @@ class XY_to_Rtheta(Node):
             targeterror.data = self.target_error
             self.target_error_publisher.publish(targeterror)
 
-
-
-
     
     def shooting_callback(self, shooting_msg):
         self.shooting_error_r = 0.0
@@ -279,6 +279,9 @@ class XY_to_Rtheta(Node):
         
         if self.stepper_pos == 2:
             self.currentPos[2] = -0.08
+        
+        if self.stepper_pos == 3:
+            self.currentPos[2] = -0.04
 
     
     def callback(self):

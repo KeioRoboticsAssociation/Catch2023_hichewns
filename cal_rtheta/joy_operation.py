@@ -10,7 +10,7 @@ class Joy_operation(Node):
     def __init__(self):
         super().__init__('joy_operation')
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
-        self.catch_judge_publisher = self.create_publisher(Bool, 'catch_data', 10)
+        # self.catch_judge_publisher = self.create_publisher(Bool, 'catch_data', 10)
         # self.degpos_publisher = self.create_publisher(Float32MultiArray, 'degpos_data', 10)
         self.degpos_publisher = self.create_publisher(CreateMessage, 'degpos_data', 10)
         self.subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)

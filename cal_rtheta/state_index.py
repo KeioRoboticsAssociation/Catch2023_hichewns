@@ -163,13 +163,33 @@ class State(Node):
         elif self.state == 2:
             self.move_cmd = False
             self.stepper_cmd = 2
+        #ここコメントにした
+            # if self.stepeer == 2:
+            #     self.release_cmd = False
+            #     release_cmd = Bool()
+            #     release_cmd.data = self.release_cmd
+            #     self.release_publisher.publish(release_cmd)
+                # time.sleep(2.0)
+                # self.state = 3
 
         elif self.state == 3:
             self.target_cmd = False
             self.move_cmd = False
-            self.stepper_cmd = 0
-            if self.stepeer == 0:
-                self.state = 4
+            if self.index > 5:
+                self.stepper_cmd = 3
+                if self.stepper == 3:
+                    self.state = 4 
+
+            elif self.index <= 5:
+                self.stepper_cmd = 0
+                if self.stepeer == 0:
+                    self.state = 4
+            
+            if self.index == 0:
+                self.stepper_cmd = 1
+                if self.stepeer == 1:
+                    self.box = 6
+                    self.state = 4
 
         elif self.state == 4:
             self.move_cmd = True
@@ -183,7 +203,7 @@ class State(Node):
             release_cmd = Bool()
             release_cmd.data = self.release_cmd
             self.release_publisher.publish(release_cmd)
-            time.sleep(5.0)
+            time.sleep(0.2)
             self.state = 7
 
         elif self.state == 7:
