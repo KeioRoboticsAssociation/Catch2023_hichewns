@@ -10,7 +10,7 @@ class JoySubscriber(Node):
         self.subscription = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
         self.publisher_ = self.create_publisher(Float32MultiArray, 'joy_data', 10)
         self.tmr = self.create_timer(0.005, self.callback)
-        self.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0]
 
     def joy_callback(self, joy_msg):
         axes = joy_msg.axes
@@ -29,6 +29,7 @@ class JoySubscriber(Node):
         self.data[9] = float(buttons[7])  
         self.data[10] = float(buttons[6])
         self.data[11] = float(buttons[8])
+        self.data[12] = float(buttons[10])
 
 
     def callback(self):

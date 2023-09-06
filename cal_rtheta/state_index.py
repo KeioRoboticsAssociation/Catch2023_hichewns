@@ -29,6 +29,10 @@ class State(Node):
         self.init_publisher = self.create_publisher(Bool, 'init', 10)
         self.move_publisher = self.create_publisher(Bool, 'move_cmd', 10)
         self.release_publisher = self.create_publisher(Bool, 'release_cmd', 10)
+        # self.is_manual_publisher = self.create_publisher(Bool, 'is_manual', 10)
+        self.is_manual_subscription = self.create_subscription(Bool, 'is_manual', self.is_manual_callback,10)
+        # self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
+        
         self.tmr = self.create_timer(0.1, self.callback)
 
         self.red_own_target = []
@@ -56,6 +60,9 @@ class State(Node):
         self.back = False
         self.release_cmd = False
         self.catch_cmd = False
+        self.is_manual = True
+        self.manual_flag = True
+
         with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_red.csv', 'r') as f:
             reader = csv.reader(f)
             for row in reader:
@@ -65,7 +72,34 @@ class State(Node):
             reader1 = csv.reader(f)
             for row in reader1:
                 self.red_shooting_box.append([float(row[0]),float(row[1])])
+
+        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_blue.csv', 'r') as f:
+        #     reader = csv.reader(f)
+        #     for row in reader:
+        #         self.red_own_target.append([float(row[0]),float(row[1])])
+
+        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting_blue.csv', 'r') as f:
+        #     reader1 = csv.reader(f)
+        #     for row in reader1:
+        #         self.red_shooting_box.append([float(row[0]),float(row[1])])
     
+    # def joy_callback(self,joy_msg):
+    #     if joy_msg.data[2] == 1.0:
+    #         if self.manual_flag == True:
+    #             self.is_manual = True
+    #             self.manual_flag = False
+
+    #         elif self.manual_flag == False:
+    #             self.is_manual = False
+    #             self.manual_flag = True
+
+    #     is_manual = Bool()
+    #     is_manual.data = self.is_manual
+    #     self.is_manual_publisher.publish(is_manual)
+
+    def is_manual_callback(self,manualmsg):
+        self.is_manual = manualmsg.data
+
     def index_callback(self,index_msg):
         self.index = index_msg.data
         self.move_cmd = False
@@ -73,12 +107,12 @@ class State(Node):
     
     def target_comp_callback(self, target_comp_msg):
         self.target_comp = target_comp_msg.data
-        if self.target_comp == True:
+        # if self.target_comp == True:
             # self.target_cmd = False
-            self.state = 2
+            # self.state = 2
     
     def real_pos_callback(self, real_pos_msg):
-        self.stepeer = real_pos_msg.stepper
+        self.stepper = real_pos_msg.stepper
     
     def shooting_comp_callback(self, shooting_comp_msg):
         self.shooting_comp = shooting_comp_msg.data
@@ -157,39 +191,45 @@ class State(Node):
             servo_cmd.data = self.servo_cmd
             self.servo_publisher.publish(servo_cmd) 
 
-            # if self.target_comp == True:
-            # self.state = 2
+            if self.target_comp == True:
+                if not self.is_manual:
+                    self.state = 2
         
         elif self.state == 2:
             self.move_cmd = False
-            self.stepper_cmd = 2
         #ここコメントにした
             # if self.stepeer == 2:
-            #     self.release_cmd = False
-            #     release_cmd = Bool()
-            #     release_cmd.data = self.release_cmd
-            #     self.release_publisher.publish(release_cmd)
-                # time.sleep(2.0)
-                # self.state = 3
+            if self.index > 5:
+                self.stepper_cmd = 3
+                if self.stepper == 3:
+                    self.release_cmd = False
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.2)
+                    self.state = 3
+
+            elif self.index <= 5:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
+                    self.release_cmd = False
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.2)
+                    self.state = 3
 
         elif self.state == 3:
             self.target_cmd = False
             self.move_cmd = False
-            if self.index > 5:
-                self.stepper_cmd = 3
-                if self.stepper == 3:
-                    self.state = 4 
-
-            elif self.index <= 5:
-                self.stepper_cmd = 0
-                if self.stepeer == 0:
-                    self.state = 4
-            
             if self.index == 0:
                 self.stepper_cmd = 1
-                if self.stepeer == 1:
+                if self.stepper == 1:
                     self.box = 6
                     self.state = 4
+            self.stepper_cmd = 0
+            if self.stepper == 0:
+                self.state = 4
 
         elif self.state == 4:
             self.move_cmd = True
