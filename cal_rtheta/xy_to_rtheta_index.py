@@ -101,27 +101,6 @@ class XY_to_Rtheta(Node):
     
     def servo_callback(self,servo_msg):
         self.servo_cmd = servo_msg.data
-        if self.servo_cmd == 1:
-            self.currentPos[4]=-math.pi/4
-            self.currentPos[5]=-math.pi/4
-            self.currentPos[6]=-math.pi/4
-            self.degPos[4] = -45.0
-
-            self.currentPos[3]=((math.pi / 2) - self.currentPos[0]) + math.pi/4
-            self.degPos[3] = (90 - self.degPos[0]) + 45
-            if self.degPos[3] < 0:
-                self.degPos[3] += 180.0
-        
-        elif self.servo_cmd == 0:
-            self.currentPos[4]=0.0
-            self.currentPos[5]=0.0
-            self.currentPos[6]=0.0
-            self.degPos[4] = 0.0
-
-            self.currentPos[3]= -self.currentPos[0]
-            self.degPos[3] = -self.degPos[0]
-            if self.degPos[3] < 0:
-                self.degPos[3] += 180.0
 
             
     def move_callback(self,move_msg):
@@ -152,6 +131,28 @@ class XY_to_Rtheta(Node):
 
         self.currentPos[0]=math.atan2(self.target_y,self.target_x)
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
+
+        if self.servo_cmd == 1:
+            self.currentPos[4]=-math.pi/4
+            self.currentPos[5]=-math.pi/4
+            self.currentPos[6]=-math.pi/4
+            self.degPos[4] = -45.0
+
+            self.currentPos[3]=((math.pi / 2) - self.currentPos[0]) + math.pi/4
+            self.degPos[3] = (90 - self.degPos[0]) + 45
+            if self.degPos[3] < 0:
+                self.degPos[3] += 180.0
+        
+        elif self.servo_cmd == 0:
+            self.currentPos[4]=0.0
+            self.currentPos[5]=0.0
+            self.currentPos[6]=0.0
+            self.degPos[4] = 0.0
+
+            self.currentPos[3]= -self.currentPos[0]
+            self.degPos[3] = -self.degPos[0]
+            if self.degPos[3] < 0:
+                self.degPos[3] += 180.0
 
         self.target_error = float(self.degPos[0] - self.real_theta)   
         self.target_error = abs(self.target_error)
