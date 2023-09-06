@@ -30,7 +30,7 @@ class State(Node):
         self.move_publisher = self.create_publisher(Bool, 'move_cmd', 10)
         self.release_publisher = self.create_publisher(Bool, 'release_cmd', 10)
         # self.is_manual_publisher = self.create_publisher(Bool, 'is_manual', 10)
-        # self.is_manual_subscription = self.create_subscription(Bool, 'is_manual', self.is_manual_callback,10)
+        self.is_manual_subscription = self.create_subscription(Bool, 'is_manual', self.is_manual_callback,10)
         # self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         
         self.tmr = self.create_timer(0.1, self.callback)
@@ -159,43 +159,41 @@ class State(Node):
             self.release_publisher.publish(release_cmd)
             self.move_cmd = False
             self.target_cmd = True
-            servo_cmd = Int8()
-            if self.index < 6:
-                self.servo_cmd = 1
+            # servo_cmd = Int8()
+            # if self.index < 6:
+            #     self.servo_cmd = 1
 
-            elif self.index >= 6:
-                self.servo_cmd = 0
-            servo_cmd.data = self.servo_cmd
-            self.servo_publisher.publish(servo_cmd) 
+            # elif self.index >= 6:
+            #     self.servo_cmd = 0
+            # servo_cmd.data = self.servo_cmd
+            # self.servo_publisher.publish(servo_cmd) 
 
             if self.target_comp == True:
-                # if not self.is_manual:
-                self.state = 2
+                if not self.is_manual:
+                    self.state = 2
         
         elif self.state == 2:
             self.move_cmd = False
-            self.stepper_cmd = 0
         #ここコメントにした
-            # if self.stepeer == 2:
-            # if self.index > 5:
-            #     self.stepper_cmd = 3
-            #     if self.stepper == 3:
-            #         self.release_cmd = False
-            #         release_cmd = Bool()
-            #         release_cmd.data = self.release_cmd
-            #         self.release_publisher.publish(release_cmd)
-            #         time.sleep(0.2)
-            #         self.state = 3
+            if self.index > 5:
+                self.stepper_cmd = 3
+                if self.stepper == 3:
+                    self.release_cmd = False
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.2)
+                    self.state = 3
 
-            # elif self.index <= 5:
-            #     self.stepper_cmd = 2
-            #     if self.stepper == 2:
-            #         self.release_cmd = False
-            #         release_cmd = Bool()
-            #         release_cmd.data = self.release_cmd
-            #         self.release_publisher.publish(release_cmd)
-            #         time.sleep(0.2)
-            #         self.state = 3
+            elif self.index <= 5:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
+                    self.release_cmd = False
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.2)
+                    self.state = 3
 
         elif self.state == 3:
             self.target_cmd = False

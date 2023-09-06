@@ -35,6 +35,7 @@ setup(
             'state_index = cal_rtheta.state_index:main',
             'cmd_state = cal_rtheta.cmd_state:main',
             'xy_to_rtheta_index = cal_rtheta.xy_to_rtheta_index:main',
+            'xy_to_rtheta_index_copy = cal_rtheta.xy_to_rtheta_index_copy:main',
             'xy_to_rtheta = cal_rtheta.xy_to_rtheta:main'
         ],
     },

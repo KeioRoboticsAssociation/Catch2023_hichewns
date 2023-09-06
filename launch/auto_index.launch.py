@@ -34,10 +34,16 @@ def generate_launch_description():
             name='state_index',
             arguments=[urdf, csv]),
 
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='xy_to_rtheta_index',
+        #     name='xy_to_rtheta_index',
+        #     arguments=[urdf]),
+        
         Node(
             package="cal_rtheta",
-            executable='xy_to_rtheta_index',
-            name='xy_to_rtheta_index',
+            executable='xy_to_rtheta_index_copy',
+            name='xy_to_rtheta_index_copy',
             arguments=[urdf]),
 
         

@@ -21,12 +21,12 @@ class XY_to_Rtheta(Node):
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         # self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
         #subscriber
+        self.index_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.shooting_error_publisher = self.create_publisher(Float32, 'shooting_error', 10)
         self.target_error_publisher = self.create_publisher(Float32, 'target_error', 10)
         self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
         self.stepper_subscription = self.create_subscription(Int8, 'stepper_cmd', self.stepper_callback,10)
-        self.servo_subscription = self.create_subscription(Int8, 'servo_cmd', self.servo_callback,10)
         self.target_subscription = self.create_subscription(Float32MultiArray, 'target_xy',self.target_callback,  10)
         self.shootingbox_subscripition = self.create_subscription(Float32MultiArray, 'shootingbox_xy', self.shooting_callback,10)
         self.release_subscription = self.create_subscription(Bool, 'release_cmd', self.release_callback, 10)
@@ -92,6 +92,9 @@ class XY_to_Rtheta(Node):
         
         elif release_msg.data == False:
             self.degPos[5] = True
+    
+    def index_callback(self,index_msg):
+        self.index = index_msg.data
 
     def cmd_state_callback(self,cmd_state_msg):
         if cmd_state_msg.data == 'c':
@@ -100,8 +103,6 @@ class XY_to_Rtheta(Node):
         elif cmd_state_msg.data == 'r':
             self.degPos[5] = False
     
-    def servo_callback(self,servo_msg):
-        self.servo_cmd = servo_msg.data
 
             
     def move_callback(self,move_msg):
@@ -135,7 +136,8 @@ class XY_to_Rtheta(Node):
         self.currentPos[0]=math.atan2(self.target_y,self.target_x)
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
 
-        if self.servo_cmd == 1:
+        # if self.servo_cmd == 1:
+        if self.index < 6:
             self.currentPos[4]=-math.pi/4
             self.currentPos[5]=-math.pi/4
             self.currentPos[6]=-math.pi/4
@@ -145,8 +147,17 @@ class XY_to_Rtheta(Node):
             self.degPos[3] = (90 - self.degPos[0]) + 45
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
-        
-        elif self.servo_cmd == 0:
+            
+            if self.armtheta != 0:
+                if self.armtheta >0:
+                    self.currentPos[3] += self.armtheta / 50
+                    self.degPos[3] += math.degrees(self.armtheta / 50)
+                elif self.armtheta < 0:
+                    self.currentPos[3] -= abs(self.armtheta) / 50
+                    self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
+
+
+        elif self.index >= 6:
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
             self.currentPos[6]=0.0
@@ -156,6 +167,13 @@ class XY_to_Rtheta(Node):
             self.degPos[3] = -self.degPos[0]
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            if self.armtheta != 0:
+                if self.armtheta >0:
+                    self.currentPos[3] += self.armtheta / 50
+                    self.degPos[3] += math.degrees(self.armtheta / 50)
+                elif self.armtheta < 0:
+                    self.currentPos[3] -= abs(self.armtheta) / 50
+                    self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
 
         self.target_error = float(self.degPos[0] - self.real_theta)   
         self.target_error = abs(self.target_error)
@@ -180,14 +198,7 @@ class XY_to_Rtheta(Node):
             elif self.y < 0:
                 self.currentPos[1] -= abs(self.y) / 500
                 self.degPos[1] -= abs(self.y) / 500
-            
-            if self.armtheta > 0:
-                self.currentPos[3] += self.armtheta / 50
-                self.degPos[3] += math.degrees(self.armtheta / 50)
-            
-            elif self.armtheta < 0:
-                self.currentPos[3] -= abs(self.armtheta) / 50
-                self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
+                        
 
             # ここまで
             self.target_pose[0] = math.cos(self.currentPos[0])* (self.degPos[1]+0.407)
