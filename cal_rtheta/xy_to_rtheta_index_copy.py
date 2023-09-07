@@ -211,7 +211,7 @@ class XY_to_Rtheta(Node):
             targeterror = Float32()
             targeterror.data = self.target_error
             self.target_error_publisher.publish(targeterror)
-            
+
             targetcomp = Bool()
             targetcomp.data = self.target_comp
             self.target_comp_publisher.publish(targetcomp)
@@ -302,10 +302,10 @@ class XY_to_Rtheta(Node):
             self.currentPos[2] = 0.04
         
         if self.stepper_pos == 2:
-            self.currentPos[2] = -0.08
+            self.currentPos[2] = -0.04
         
         if self.stepper_pos == 3:
-            self.currentPos[2] = -0.04
+            self.currentPos[2] = -0.08
 
     
     def callback(self):

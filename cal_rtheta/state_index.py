@@ -176,8 +176,8 @@ class State(Node):
             self.move_cmd = False
         #ここコメントにした
             if self.index > 5:
-                self.stepper_cmd = 3
-                if self.stepper == 3:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
                     self.release_cmd = False
                     release_cmd = Bool()
                     release_cmd.data = self.release_cmd
@@ -186,8 +186,8 @@ class State(Node):
                     self.state = 3
 
             elif self.index <= 5:
-                self.stepper_cmd = 2
-                if self.stepper == 2:
+                self.stepper_cmd = 3
+                if self.stepper == 3:
                     self.release_cmd = False
                     release_cmd = Bool()
                     release_cmd.data = self.release_cmd

@@ -115,7 +115,7 @@ class Joy_operation(Node):
             self.grasp.data = False
             self.degPos[5] = False
 
-        self.catch_judge_publisher.publish(self.grasp)
+        # self.catch_judge_publisher.publish(self.grasp)
         
         if self.rev == 1.0:
             if self.flag == 1:
