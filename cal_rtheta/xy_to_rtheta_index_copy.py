@@ -137,7 +137,7 @@ class XY_to_Rtheta(Node):
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
 
         # if self.servo_cmd == 1:
-        if self.index < 6:
+        if self.index < 6 and self.armtheta == 0.0:
             self.currentPos[4]=-math.pi/4
             self.currentPos[5]=-math.pi/4
             self.currentPos[6]=-math.pi/4
@@ -147,17 +147,8 @@ class XY_to_Rtheta(Node):
             self.degPos[3] = (90 - self.degPos[0]) + 45
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
-            
-            if self.armtheta != 0:
-                if self.armtheta >0:
-                    self.currentPos[3] += self.armtheta / 50
-                    self.degPos[3] += math.degrees(self.armtheta / 50)
-                elif self.armtheta < 0:
-                    self.currentPos[3] -= abs(self.armtheta) / 50
-                    self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
 
-
-        elif self.index >= 6:
+        elif self.index >= 6 and self.armtheta == 0.0:
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
             self.currentPos[6]=0.0
@@ -167,13 +158,14 @@ class XY_to_Rtheta(Node):
             self.degPos[3] = -self.degPos[0]
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
-            if self.armtheta != 0:
-                if self.armtheta >0:
-                    self.currentPos[3] += self.armtheta / 50
-                    self.degPos[3] += math.degrees(self.armtheta / 50)
-                elif self.armtheta < 0:
-                    self.currentPos[3] -= abs(self.armtheta) / 50
-                    self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
+        
+        # if self.armtheta > 0:
+        #         self.currentPos[3] += self.armtheta / 50
+        #         self.degPos[3] += math.degrees(self.armtheta / 50)
+            
+        # elif self.armtheta < 0:
+        #         self.currentPos[3] -= abs(self.armtheta) / 50
+        #         self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
 
         self.target_error = float(self.degPos[0] - self.real_theta)   
         self.target_error = abs(self.target_error)
@@ -215,13 +207,14 @@ class XY_to_Rtheta(Node):
                 self.target_comp  = True
             elif self.target_error_r > 0.02:
                 self.target_comp = False
-            targetcomp = Bool()
-            targetcomp.data = self.target_comp
-            self.target_comp_publisher.publish(targetcomp)
         
             targeterror = Float32()
             targeterror.data = self.target_error
             self.target_error_publisher.publish(targeterror)
+            
+            targetcomp = Bool()
+            targetcomp.data = self.target_comp
+            self.target_comp_publisher.publish(targetcomp)
 
     
     def shooting_callback(self, shooting_msg):
@@ -254,13 +247,13 @@ class XY_to_Rtheta(Node):
                 self.currentPos[1] -= abs(self.y) / 500
                 self.degPos[1] -= abs(self.y) / 500
             
-            if self.armtheta > 0:
-                self.currentPos[3] += self.armtheta / 100
-                self.degPos[3] += self.armtheta / 100
+            # if self.armtheta > 0:
+            #     self.currentPos[3] += self.armtheta / 100
+            #     self.degPos[3] += self.armtheta / 100
             
-            elif self.armtheta < 0:
-                self.currentPos[3] -= abs(self.armtheta) / 100
-                self.degPos[3] -= abs(self.armtheta) / 100
+            # elif self.armtheta < 0:
+            #     self.currentPos[3] -= abs(self.armtheta) / 100
+            #     self.degPos[3] -= abs(self.armtheta) / 100
 
             # ここまで
             self.shooting_pose[0] = math.cos(self.currentPos[0])* (self.degPos[1]+0.407)

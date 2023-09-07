@@ -60,7 +60,7 @@ class State(Node):
         self.back = False
         self.release_cmd = False
         self.catch_cmd = False
-        self.is_manual = True
+        self.is_manual = False
         self.manual_flag = True
 
         with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_red.csv', 'r') as f:
