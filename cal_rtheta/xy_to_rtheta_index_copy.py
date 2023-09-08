@@ -142,8 +142,8 @@ class XY_to_Rtheta(Node):
         self.target_error = float(self.degPos[0] - self.real_theta)   
         self.target_error = abs(self.target_error)   
 
-        if self.servo_cmd == 1:
-        # if self.index < 6 and self.armtheta == 0.0:
+        # if self.servo_cmd == 1:
+        if self.index < 6 and self.armtheta == 0.0:
             self.currentPos[4]=-math.pi/4
             self.currentPos[5]=-math.pi/4
             self.currentPos[6]=-math.pi/4
@@ -154,8 +154,8 @@ class XY_to_Rtheta(Node):
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
 
-        # elif self.index >= 6 and self.armtheta == 0.0:
-        elif self.servo_cmd == 0:
+        elif self.index >= 6 and self.armtheta == 0.0:
+        # elif self.servo_cmd == 0:
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
             self.currentPos[6]=0.0

@@ -22,6 +22,7 @@ class State(Node):
         self.target_comp_subscription = self.create_subscription(Bool, 'target_comp', self.target_comp_callback, 10)
         self.targetcomp_publisher = self.create_publisher(Bool, 'target_comp', 10)
         self.shooting_comp_subscription = self.create_subscription(Bool, 'shooting_comp', self.shooting_comp_callback, 10)
+        self.shooting_comp_publisher = self.create_publisher(Bool, 'shooting_comp', 10)
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
         self.servo_publisher = self.create_publisher(Int8, 'servo_cmd', 10)
@@ -96,6 +97,12 @@ class State(Node):
         self.shooting_comp = shooting_comp_msg.data
         if self.shooting_comp == True:
             self.shooting_cmd = False
+
+            self.shooting_comp = False
+            shootingcomp = Bool()
+            shootingcomp.data = self.shooting_comp
+            self.shooting_comp_publisher.publish(shootingcomp)
+
             self.state = 6
 
     def shooting_index_callback(self,shooting_index_msg):
