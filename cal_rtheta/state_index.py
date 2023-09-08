@@ -20,7 +20,10 @@ class State(Node):
         self.target_pose_subscription = self.create_subscription(Float32MultiArray, 'target_pose', self.target_pose_callback,10)
         self.shooting_pose_subscription = self.create_subscription(Float32MultiArray, 'shooting_pose', self.shooting_pose_callback,10)
         self.target_comp_subscription = self.create_subscription(Bool, 'target_comp', self.target_comp_callback, 10)
+        self.target_comp_r_subscription = self.create_subscription(Bool, 'target_comp_r', self.target_comp_r_callback, 10)
+        
         self.targetcomp_publisher = self.create_publisher(Bool, 'target_comp', 10)
+        self.target_comp_r_publisher = self.create_publisher(Bool, 'target_comp_r', 10)
         self.shooting_comp_subscription = self.create_subscription(Bool, 'shooting_comp', self.shooting_comp_callback, 10)
         self.shooting_comp_publisher = self.create_publisher(Bool, 'shooting_comp', 10)
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
@@ -52,6 +55,8 @@ class State(Node):
         self.shooting_cmd = False
         self.state_data = [0,0,0]
         self.target_comp = False
+        self.target_comp_r = False
+
         self.shooting_comp = False
         self.catched = False
         self.index = 0
@@ -88,6 +93,12 @@ class State(Node):
         self.target_comp = target_comp_msg.data
         if self.target_comp == True:
             self.target_cmd = False
+            # self.state = 2
+    
+    def target_comp_r_callback(self, target_comp_r_msg):
+        self.target_comp_r = target_comp_r_msg.data
+        # if self.target_comp_r == True:
+        #     self.target_cmd = False
             # self.state = 2
     
     def real_pos_callback(self, real_pos_msg):
@@ -179,13 +190,19 @@ class State(Node):
 
             if self.target_comp == True:
                 self.stepper_cmd = 1
+                self.target_comp = False
+                targetcomp = Bool()
+                targetcomp.data = self.target_comp
+                self.targetcomp_publisher.publish(targetcomp)
+
+            if self.target_comp_r == True:
                 if self.stepper == 1:
                     if not self.is_manual:
                         self.target_cmd = False
-                        self.target_comp = False
-                        targetcomp = Bool()
-                        targetcomp.data = self.target_comp
-                        self.targetcomp_publisher.publish(targetcomp)
+                        self.target_comp_r = False
+                        targetcomp_r = Bool()
+                        targetcomp_r.data = self.target_comp_r
+                        self.target_comp_r_publisher.publish(targetcomp_r)
                         self.state = 2
         
         elif self.state == 2:

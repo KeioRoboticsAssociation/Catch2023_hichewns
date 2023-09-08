@@ -36,6 +36,7 @@ class XY_to_Rtheta(Node):
         self.target_pose_publisher = self.create_publisher(Float32MultiArray, 'target_pose', 10)
         self.shooting_pose_publisher = self.create_publisher(Float32MultiArray, 'shooting_pose', 10)
         self.target_comp_publisher = self.create_publisher(Bool, 'target_comp', 10)
+        self.target_comp_r_publisher = self.create_publisher(Bool, 'target_comp_r', 10)
         self.shooting_comp_publisher = self.create_publisher(Bool, 'shooting_comp', 10)
         # self.joint_subscription = self.create_subscription(JointState, 'joint_states', self.joint_states_callback,10)
         
@@ -59,6 +60,11 @@ class XY_to_Rtheta(Node):
         self.shooting_error_r = 0.0
         self.target_error = 0.0
         self.target_error_r = 0.0
+
+        self.rev = 0.0
+        self.degrev = 0.0
+        self.index_prev = 0
+        
         self.ERROR_theta = 45.0
         self.ERROR_target_theta = 120.0
         self.target_error_th = 120.0
@@ -66,6 +72,7 @@ class XY_to_Rtheta(Node):
 
         self.target_comp = False
         self.shooting_comp = False
+        self.target_comp_r = False
 
         self.theta = 0.0
         self.y = 0.0
@@ -87,6 +94,7 @@ class XY_to_Rtheta(Node):
     def real_pos_callback(self,real_pos_msg):
         self.real_theta = real_pos_msg.theta
         self.real_r = real_pos_msg.r 
+        self.real_armtheta = real_pos_msg.armtheta
     
     def release_callback(self,release_msg):
         if release_msg.data == True:
@@ -143,36 +151,41 @@ class XY_to_Rtheta(Node):
         self.target_error = abs(self.target_error)   
 
         # if self.servo_cmd == 1:
-        if self.index < 6 and self.armtheta == 0.0:
+        if not self.index == self.index_prev:
+            self.rev = 0.0
+    
+        if self.index < 6:
             self.currentPos[4]=-math.pi/4
             self.currentPos[5]=-math.pi/4
             self.currentPos[6]=-math.pi/4
             self.degPos[4] = -45.0
 
-            self.currentPos[3]=((math.pi / 2) - self.currentPos[0]) + math.pi/4
-            self.degPos[3] = (90 - self.degPos[0]) + 45
+            self.currentPos[3]=((math.pi / 2) - self.currentPos[0]) + math.pi/4 + self.rev
+            self.degPos[3] = (90 - self.degPos[0]) + 45 + self.degrev
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            self.index_prev = self.index
 
-        elif self.index >= 6 and self.armtheta == 0.0:
+        elif self.index >= 6:
         # elif self.servo_cmd == 0:
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
             self.currentPos[6]=0.0
             self.degPos[4] = 0.0
 
-            self.currentPos[3]= -self.currentPos[0]
-            self.degPos[3] = -self.degPos[0]
+            self.currentPos[3]= -self.currentPos[0] + self.rev
+            self.degPos[3] = -self.degPos[0] + self.degrev
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            self.index_prev = self.index
         
-        # if self.armtheta > 0:
-        #         self.currentPos[3] += self.armtheta / 50
-        #         self.degPos[3] += math.degrees(self.armtheta / 50)
+        if self.armtheta > 0:
+                self.rev += self.armtheta / 50
+                self.degrev += math.degrees(self.armtheta / 50)
             
-        # elif self.armtheta < 0:
-        #         self.currentPos[3] -= abs(self.armtheta) / 50
-        #         self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
+        elif self.armtheta < 0:
+                self.rev -= abs(self.armtheta) / 50
+                self.degrev -= math.degrees(abs(self.armtheta) / 50)
 
         if self.target_error <= self.ERROR_target_theta:
             self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
@@ -208,10 +221,17 @@ class XY_to_Rtheta(Node):
 
             # if self.target_error_r <= 0.05 and self.y == 0.0 and self.theta == 0.0:
             # and self.y == 0.0 and self.theta == 0.0:
+
+
+        ##ここコメントにした
             if self.target_error < self.target_error_th:
                 self.target_comp  = True
+            
+            if self.target_error_r <= 0.05:
+                self.target_comp_r = True
             # elif self.target_error_r > 0.02:
             #     self.target_comp = False
+
         targeterror = Float32()
         targeterror.data = self.target_error
         self.target_error_publisher.publish(targeterror)
@@ -220,6 +240,9 @@ class XY_to_Rtheta(Node):
         targetcomp.data = self.target_comp
         self.target_comp_publisher.publish(targetcomp)
 
+        targetcomp_r = Bool()
+        targetcomp_r.data = self.target_comp_r
+        self.target_comp_r_publisher.publish(targetcomp_r)
         
         # elif self.target_error > self.ERROR_theta:
         #     self.target_comp = False
