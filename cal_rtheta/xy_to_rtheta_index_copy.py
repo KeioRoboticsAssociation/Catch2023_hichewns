@@ -60,6 +60,8 @@ class XY_to_Rtheta(Node):
         self.target_error = 0.0
         self.target_error_r = 0.0
         self.ERROR_theta = 45.0
+        self.ERROR_target_theta = 120.0
+        self.target_error_th = 120.0
         self.flag = 0
 
         self.target_comp = False
@@ -129,6 +131,7 @@ class XY_to_Rtheta(Node):
             
     def target_callback(self, target_msg):
         self.target_error_r = 0.0
+        self.target_comp = False
         self.target_x = target_msg.data[0]
         self.target_y = target_msg.data[1]
         self.target_pose = [self.target_x,self.target_y]
@@ -136,8 +139,11 @@ class XY_to_Rtheta(Node):
         self.currentPos[0]=math.atan2(self.target_y,self.target_x)
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
 
-        # if self.servo_cmd == 1:
-        if self.index < 6 and self.armtheta == 0.0:
+        self.target_error = float(self.degPos[0] - self.real_theta)   
+        self.target_error = abs(self.target_error)   
+
+        if self.servo_cmd == 1:
+        # if self.index < 6 and self.armtheta == 0.0:
             self.currentPos[4]=-math.pi/4
             self.currentPos[5]=-math.pi/4
             self.currentPos[6]=-math.pi/4
@@ -148,7 +154,8 @@ class XY_to_Rtheta(Node):
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
 
-        elif self.index >= 6 and self.armtheta == 0.0:
+        # elif self.index >= 6 and self.armtheta == 0.0:
+        elif self.servo_cmd == 0:
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
             self.currentPos[6]=0.0
@@ -167,9 +174,7 @@ class XY_to_Rtheta(Node):
         #         self.currentPos[3] -= abs(self.armtheta) / 50
         #         self.degPos[3] -= math.degrees(abs(self.armtheta) / 50)
 
-        self.target_error = float(self.degPos[0] - self.real_theta)   
-        self.target_error = abs(self.target_error)
-        if self.target_error <= self.ERROR_theta:
+        if self.target_error <= self.ERROR_target_theta:
             self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
 
             self.degPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
@@ -190,7 +195,6 @@ class XY_to_Rtheta(Node):
             elif self.y < 0:
                 self.currentPos[1] -= abs(self.y) / 500
                 self.degPos[1] -= abs(self.y) / 500
-                        
 
             # ここまで
             self.target_pose[0] = math.cos(self.currentPos[0])* (self.degPos[1]+0.407)
@@ -202,19 +206,24 @@ class XY_to_Rtheta(Node):
             self.target_error_r = float(self.degPos[1] - (self.real_r/1000))
             self.target_error_r = abs(self.target_error_r)
 
-            if self.target_error_r <= 0.02 and self.y == 0.0 and self.theta == 0.0:
+            # if self.target_error_r <= 0.05 and self.y == 0.0 and self.theta == 0.0:
             # and self.y == 0.0 and self.theta == 0.0:
+            if self.target_error < self.target_error_th:
                 self.target_comp  = True
-            elif self.target_error_r > 0.02:
-                self.target_comp = False
-        
-            targeterror = Float32()
-            targeterror.data = self.target_error
-            self.target_error_publisher.publish(targeterror)
+            # elif self.target_error_r > 0.02:
+            #     self.target_comp = False
+        targeterror = Float32()
+        targeterror.data = self.target_error
+        self.target_error_publisher.publish(targeterror)
+            
+        targetcomp = Bool()
+        targetcomp.data = self.target_comp
+        self.target_comp_publisher.publish(targetcomp)
 
-            targetcomp = Bool()
-            targetcomp.data = self.target_comp
-            self.target_comp_publisher.publish(targetcomp)
+        
+        # elif self.target_error > self.ERROR_theta:
+        #     self.target_comp = False
+        # self.target_comp=False
 
     
     def shooting_callback(self, shooting_msg):
@@ -264,10 +273,10 @@ class XY_to_Rtheta(Node):
 
             self.shooting_error_r = float(self.degPos[1] - (self.real_r/1000))
             self.shooting_error_r = abs(self.shooting_error_r)
-            if self.shooting_error_r <= 0.001:
+            if self.shooting_error_r <= 0.01:
             # and self.y == 0.0 and self.theta == 0.0:
                 self.shooting_comp = True
-            elif self.shooting_error_r > 0.001:
+            elif self.shooting_error_r > 0.01:
                 self.shooting_comp = False
             #     self.degPos[5] = False
 

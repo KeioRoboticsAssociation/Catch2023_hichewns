@@ -20,6 +20,7 @@ class State(Node):
         self.target_pose_subscription = self.create_subscription(Float32MultiArray, 'target_pose', self.target_pose_callback,10)
         self.shooting_pose_subscription = self.create_subscription(Float32MultiArray, 'shooting_pose', self.shooting_pose_callback,10)
         self.target_comp_subscription = self.create_subscription(Bool, 'target_comp', self.target_comp_callback, 10)
+        self.targetcomp_publisher = self.create_publisher(Bool, 'target_comp', 10)
         self.shooting_comp_subscription = self.create_subscription(Bool, 'shooting_comp', self.shooting_comp_callback, 10)
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
         self.stepper_publisher = self.create_publisher(Int8, 'stepper_cmd', 10)
@@ -153,24 +154,32 @@ class State(Node):
             self.init_publisher.publish(init_msg)
 
         elif self.state == 1:
+            self.target_cmd = True
             self.release_cmd = True
             release_cmd = Bool()
             release_cmd.data = self.release_cmd
             self.release_publisher.publish(release_cmd)
             self.move_cmd = False
             self.target_cmd = True
-            # servo_cmd = Int8()
-            # if self.index < 6:
-            #     self.servo_cmd = 1
+            servo_cmd = Int8()
+            if self.index < 6:
+                self.servo_cmd = 1
 
-            # elif self.index >= 6:
-            #     self.servo_cmd = 0
-            # servo_cmd.data = self.servo_cmd
-            # self.servo_publisher.publish(servo_cmd) 
+            elif self.index >= 6:
+                self.servo_cmd = 0
+            servo_cmd.data = self.servo_cmd
+            self.servo_publisher.publish(servo_cmd) 
 
             if self.target_comp == True:
-                if not self.is_manual:
-                    self.state = 2
+                self.stepper_cmd = 1
+                if self.stepper == 1:
+                    if not self.is_manual:
+                        self.target_cmd = False
+                        self.target_comp = False
+                        targetcomp = Bool()
+                        targetcomp.data = self.target_comp
+                        self.targetcomp_publisher.publish(targetcomp)
+                        self.state = 2
         
         elif self.state == 2:
             self.move_cmd = False
@@ -182,7 +191,7 @@ class State(Node):
                     release_cmd = Bool()
                     release_cmd.data = self.release_cmd
                     self.release_publisher.publish(release_cmd)
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                     self.state = 3
 
             elif self.index <= 5:
@@ -196,7 +205,7 @@ class State(Node):
                     self.state = 3
 
         elif self.state == 3:
-            self.target_cmd = False
+            # self.target_cmd = False
             self.move_cmd = False
             if self.index == 0:
                 self.stepper_cmd = 1
@@ -215,11 +224,12 @@ class State(Node):
             self.shooting_cmd = True
 
         elif self.state == 6:
+            # self.shooting_cmd = False
             self.release_cmd = True
             release_cmd = Bool()
             release_cmd.data = self.release_cmd
             self.release_publisher.publish(release_cmd)
-            time.sleep(0.2)
+            time.sleep(0.5)
             self.state = 7
 
         elif self.state == 7:
