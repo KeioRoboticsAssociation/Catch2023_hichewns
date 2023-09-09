@@ -64,7 +64,10 @@ class XY_to_Rtheta(Node):
 
         self.rev = 0.0
         self.degrev = 0.0
+        self.rev_shooting = 0.0
+        self.degrev_shooting = 0.0
         self.index_prev = 0
+        self.shooting_index_prev = 0
         
         self.ERROR_theta = 45.0
         self.ERROR_target_theta = 120.0
@@ -160,6 +163,7 @@ class XY_to_Rtheta(Node):
         # if self.servo_cmd == 1:
         if not self.index == self.index_prev:
             self.rev = 0.0
+            self.degrev = 0.0
     
         if self.index < 6:
             self.currentPos[4]=-math.pi/4
@@ -224,6 +228,11 @@ class XY_to_Rtheta(Node):
             self.target_pose_publisher.publish(targetpose)
             # if self.target_error_r <= 0.05 and self.y == 0.0 and self.theta == 0.0:
             # and self.y == 0.0 and self.theta == 0.0:
+
+            if self.index == 1:
+                self.target_error_th = 60.0
+            elif not self.index == 1:
+                self.target_error_th = 120.0
   
             if self.target_error < self.target_error_th:
                 self.target_comp  = True
@@ -311,27 +320,42 @@ class XY_to_Rtheta(Node):
             shootingerror = Float32()
             shootingerror.data = self.shooting_error_r
             self.shooting_error_publisher.publish(shootingerror)
+
+        if not self.shooting_index == self.shooting_index_prev:
+            self.rev_shooting = 0.0
+            self.degrev_shooting = 0.0
         
         if self.shooting_index == 7:
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
             self.currentPos[6]=0.0
             self.degPos[4] = 0.0
-            self.currentPos[3]= -self.currentPos[0]
-            self.degPos[3] = -self.degPos[0]
+            self.currentPos[3]= -self.currentPos[0]+self.rev_shooting
+            self.degPos[3] = -self.degPos[0] + self.degrev_shooting
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            self.shooting_index_prev = self.shooting_index
         
         elif self.shooting_index < 7:
-            self.currentPos[3]=-(self.currentPos[0] - math.pi/2)
+            self.currentPos[3]=-(self.currentPos[0] - math.pi/2) + self.rev_shooting
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
             self.currentPos[6]=0.0
 
-            self.degPos[3]=-(self.degPos[0] - 90.0)
+            self.degPos[3]=-(self.degPos[0] - 90.0) + self.degrev_shooting
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
             self.degPos[4]=0.0
+            self.shooting_index_prev = self.shooting_index
+
+
+        if self.armtheta > 0:
+                self.rev_shooting += self.armtheta / 50
+                self.degrev_shooting += math.degrees(self.armtheta / 50)
+            
+        elif self.armtheta < 0:
+                self.rev_shooting -= abs(self.armtheta) / 50
+                self.degrev_shooting -= math.degrees(abs(self.armtheta) / 50)
 
     
     def stepper_callback(self,msg):

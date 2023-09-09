@@ -90,7 +90,7 @@ class State(Node):
     
     def target_error_callback(self, target_error_msg):
         self.target_error = target_error_msg.data
-        if self.target_error < 0.8:
+        if self.target_error < 2.0:
             self.target_comp_r = True
         else:
             self.target_comp_r = False
@@ -125,11 +125,13 @@ class State(Node):
             shootingcomp = Bool()
             shootingcomp.data = self.shooting_comp
             self.shooting_comp_publisher.publish(shootingcomp)
+            if not self.is_manual:
             #ここを付け足した置くよう
-            if self.box == 7:
-                self.state = 10
-            elif self.box < 7:
-                self.state = 6
+                if self.box == 7:
+                    self.state = 10
+                elif self.box < 7:
+                    time.sleep(2.0)
+                    self.state = 6
 
     def shooting_index_callback(self,shooting_index_msg):
         self.box = shooting_index_msg.data
@@ -156,6 +158,14 @@ class State(Node):
             self.next = True
 
         if self.next == True:
+            if self.state == 1:
+                self.target_comp = False
+                targetcomp = Bool()
+                targetcomp.data = self.target_comp
+                self.targetcomp_publisher.publish(targetcomp)
+                self.target_comp_r = False
+                self.target_cmd = False
+
             self.state += 1
             time.sleep(0.5)
             if self.state > 7:
