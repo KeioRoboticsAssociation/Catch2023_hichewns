@@ -22,6 +22,7 @@ class XY_to_Rtheta(Node):
         # self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
         #subscriber
         self.index_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
+        self.shooting_index_subscription = self.create_subscription(Int8, 'shooting_index', self.shooting_index_callback, 10)
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.shooting_error_publisher = self.create_publisher(Float32, 'shooting_error', 10)
         self.target_error_publisher = self.create_publisher(Float32, 'target_error', 10)
@@ -105,6 +106,9 @@ class XY_to_Rtheta(Node):
     
     def index_callback(self,index_msg):
         self.index = index_msg.data
+    
+    def shooting_index_callback(self,shooting_index_msg):
+        self.shooting_index = shooting_index_msg.data
 
     def cmd_state_callback(self,cmd_state_msg):
         if cmd_state_msg.data == 'c':
@@ -149,6 +153,9 @@ class XY_to_Rtheta(Node):
 
         self.target_error = float(self.degPos[0] - self.real_theta)   
         self.target_error = abs(self.target_error)   
+
+        self.target_error_r = float(self.degPos[1] - (self.real_r/1000))
+        self.target_error_r = abs(self.target_error_r)
 
         # if self.servo_cmd == 1:
         if not self.index == self.index_prev:
@@ -215,19 +222,13 @@ class XY_to_Rtheta(Node):
             targetpose = Float32MultiArray()
             targetpose.data = self.target_pose
             self.target_pose_publisher.publish(targetpose)
-
-            self.target_error_r = float(self.degPos[1] - (self.real_r/1000))
-            self.target_error_r = abs(self.target_error_r)
-
             # if self.target_error_r <= 0.05 and self.y == 0.0 and self.theta == 0.0:
             # and self.y == 0.0 and self.theta == 0.0:
-
-
-        ##ここコメントにした
+  
             if self.target_error < self.target_error_th:
                 self.target_comp  = True
             
-            if self.target_error_r <= 0.05:
+            if self.target_error < 0.2:
                 self.target_comp_r = True
             # elif self.target_error_r > 0.02:
             #     self.target_comp = False
@@ -311,16 +312,26 @@ class XY_to_Rtheta(Node):
             shootingerror.data = self.shooting_error_r
             self.shooting_error_publisher.publish(shootingerror)
         
+        if self.shooting_index == 7:
+            self.currentPos[4]=0.0
+            self.currentPos[5]=0.0
+            self.currentPos[6]=0.0
+            self.degPos[4] = 0.0
+            self.currentPos[3]= -self.currentPos[0]
+            self.degPos[3] = -self.degPos[0]
+            if self.degPos[3] < 0:
+                self.degPos[3] += 180.0
+        
+        elif self.shooting_index < 7:
+            self.currentPos[3]=-(self.currentPos[0] - math.pi/2)
+            self.currentPos[4]=0.0
+            self.currentPos[5]=0.0
+            self.currentPos[6]=0.0
 
-        self.currentPos[3]=-(self.currentPos[0] - math.pi/2)
-        self.currentPos[4]=0.0
-        self.currentPos[5]=0.0
-        self.currentPos[6]=0.0
-
-        self.degPos[3]=-(self.degPos[0] - 90.0)
-        if self.degPos[3] < 0:
-            self.degPos[3] += 180.0
-        self.degPos[4]=0.0
+            self.degPos[3]=-(self.degPos[0] - 90.0)
+            if self.degPos[3] < 0:
+                self.degPos[3] += 180.0
+            self.degPos[4]=0.0
 
     
     def stepper_callback(self,msg):

@@ -16,11 +16,11 @@ def generate_launch_description():
             name='joint_publisher',
             arguments=[urdf]),
 
-        Node(
-            package="cal_rtheta",
-            executable='input',
-            name='input',
-            arguments=[urdf]),
+        # Node(
+        #     package="cal_rtheta",
+        #     executable='state_index_forprevent',
+        #     name='state_index_forprevent',
+        #     arguments=[urdf]),
 
         # Node(
         #     package="cal_rtheta",
@@ -28,11 +28,11 @@ def generate_launch_description():
         #     name='index',
         #     arguments=[urdf]),
 
-        # Node(
-        #     package="cal_rtheta",
-        #     executable='state_index',
-        #     name='state_index',
-        #     arguments=[urdf, csv]),
+        Node(
+            package="cal_rtheta",
+            executable='state_index',
+            name='state_index',
+            arguments=[urdf, csv]),
 
         Node(
             package="cal_rtheta",

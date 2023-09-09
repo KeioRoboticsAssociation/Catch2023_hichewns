@@ -33,6 +33,7 @@ setup(
             'convert = cal_rtheta.convert:main',
             'state = cal_rtheta.state:main',
             'state_index = cal_rtheta.state_index:main',
+            'state_index_forprevent = cal_rtheta.state_index_forprevent:main',
             'cmd_state = cal_rtheta.cmd_state:main',
             'xy_to_rtheta_index = cal_rtheta.xy_to_rtheta_index:main',
             'xy_to_rtheta_index_copy = cal_rtheta.xy_to_rtheta_index_copy:main',
