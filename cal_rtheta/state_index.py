@@ -236,12 +236,15 @@ class State(Node):
                 if self.stepper == 1:
                     self.box = 6
                     self.state = 4
-            self.stepper_cmd = 0
-            if self.stepper == 0:
+            self.stepper_cmd = 1
+            if self.stepper == 1:
                 self.state = 4
 
         elif self.state == 4:
             self.move_cmd = True
+            if self.index == 0:
+                self.stepper_cmd = 1
+            self.stepper_cmd = 0
             
         elif self.state == 5:
             self.move_cmd = False
