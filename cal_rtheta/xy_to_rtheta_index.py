@@ -375,6 +375,9 @@ class XY_to_Rtheta(Node):
             self.currentPos[2] = -0.04
         
         if self.stepper_pos == 4:
+            self.currentPos[2] = -0.06
+        
+        if self.stepper_pos == 5:
             self.currentPos[2] = -0.08
 
     

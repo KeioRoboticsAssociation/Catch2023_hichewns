@@ -137,6 +137,7 @@ class State(Node):
         self.box = shooting_index_msg.data
         self.move_cmd = False
         if self.box == 7:
+            self.red_own_target.append(self.red_shooting_box[7])
             self.state = 8
         elif self.box < 7:
             self.state = 5
@@ -241,7 +242,17 @@ class State(Node):
             self.move_cmd = False
 
         #ここコメントにした
-            if self.index > 5:
+
+            if self.index <= 5 or self.index == 15:
+                self.stepper_cmd = 5
+                if self.stepper == 5:
+                    self.release_cmd = False
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.2)
+                    self.state = 3
+            elif self.index > 5:
                 self.stepper_cmd = 3
                 if self.stepper == 3:
                     self.release_cmd = False
@@ -249,16 +260,6 @@ class State(Node):
                     release_cmd.data = self.release_cmd
                     self.release_publisher.publish(release_cmd)
                     time.sleep(0.5)
-                    self.state = 3
-
-            elif self.index <= 5:
-                self.stepper_cmd = 4
-                if self.stepper == 4:
-                    self.release_cmd = False
-                    release_cmd = Bool()
-                    release_cmd.data = self.release_cmd
-                    self.release_publisher.publish(release_cmd)
-                    time.sleep(0.2)
                     self.state = 3
 
         elif self.state == 3:
@@ -331,8 +332,8 @@ class State(Node):
         
         elif self.state == 10:
             self.shooting_cmd = False
-            self.stepper_cmd = 3
-            if self.stepper == 3:
+            self.stepper_cmd = 4
+            if self.stepper == 4:
                 self.state = 11
         
         elif self.state == 11:
