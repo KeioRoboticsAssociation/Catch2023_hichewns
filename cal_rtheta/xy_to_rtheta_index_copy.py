@@ -8,6 +8,7 @@ from std_msgs.msg import Float32MultiArray
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float32
 from catch2023_interfaces.msg import CreateMessage
+from catch2023_interfaces.msg import CreateMessage_copy
 import math
 import time
 
@@ -17,7 +18,7 @@ class XY_to_Rtheta(Node):
     def __init__(self):
         #publisher
         super().__init__('xy_to_rtheta')
-        self.degpos_publisher = self.create_publisher(CreateMessage, 'degpos_data', 10)
+        self.degpos_publisher = self.create_publisher(CreateMessage_copy, 'degpos_data', 10)
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         # self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
         #subscriber
@@ -366,12 +367,15 @@ class XY_to_Rtheta(Node):
             self.currentPos[2] = 0.08
         
         if self.stepper_pos == 1:
-            self.currentPos[2] = 0.04
+            self.currentPos[2] = 0.06
         
         if self.stepper_pos == 2:
-            self.currentPos[2] = -0.04
+            self.currentPos[2] = 0.04
         
         if self.stepper_pos == 3:
+            self.currentPos[2] = -0.04
+        
+        if self.stepper_pos == 4:
             self.currentPos[2] = -0.08
 
     

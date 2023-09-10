@@ -331,8 +331,8 @@ class State(Node):
         
         elif self.state == 10:
             self.shooting_cmd = False
-            self.stepper_cmd = 4
-            if self.stepper == 4:
+            self.stepper_cmd = 3
+            if self.stepper == 3:
                 self.state = 11
         
         elif self.state == 11:
