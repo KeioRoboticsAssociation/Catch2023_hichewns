@@ -217,10 +217,10 @@ class State(Node):
             self.servo_publisher.publish(servo_cmd) 
 
             if self.target_comp == True:
-                self.stepper_cmd = 1
+                self.stepper_cmd = 2
 
             if self.target_comp_r == True:
-                if self.stepper == 1:
+                if self.stepper == 2:
                     if not self.is_manual:
                         self.target_comp = False
                         targetcomp = Bool()
@@ -242,8 +242,8 @@ class State(Node):
 
         #ここコメントにした
             if self.index > 5:
-                self.stepper_cmd = 2
-                if self.stepper == 2:
+                self.stepper_cmd = 3
+                if self.stepper == 3:
                     self.release_cmd = False
                     release_cmd = Bool()
                     release_cmd.data = self.release_cmd
@@ -252,8 +252,8 @@ class State(Node):
                     self.state = 3
 
             elif self.index <= 5:
-                self.stepper_cmd = 3
-                if self.stepper == 3:
+                self.stepper_cmd = 4
+                if self.stepper == 4:
                     self.release_cmd = False
                     release_cmd = Bool()
                     release_cmd.data = self.release_cmd
@@ -265,8 +265,8 @@ class State(Node):
             # self.target_cmd = False
             self.move_cmd = False
             if self.index == 0:
-                self.stepper_cmd = 1
-                if self.stepper == 1:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
                     self.box = 6
                     self.state = 4
 
@@ -279,14 +279,14 @@ class State(Node):
                     self.state = 4
 
             elif self.index == 5:
-                self.stepper_cmd = 1
-                if self.stepper == 1:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
                     self.state = 4
 
         elif self.state == 4:
             self.move_cmd = True
             if self.index == 0:
-                self.stepper_cmd = 1
+                self.stepper_cmd = 2
             self.stepper_cmd = 0
             
         elif self.state == 5:
@@ -294,23 +294,27 @@ class State(Node):
             self.shooting_cmd = True
 
         elif self.state == 6:
+            self.stepper_cmd = 1
+            if self.stepper == 1:
             # self.shooting_cmd = False
-            self.release_cmd = True
-            release_cmd = Bool()
-            release_cmd.data = self.release_cmd
-            self.release_publisher.publish(release_cmd)
-            time.sleep(0.5)
-            self.state = 7
+                self.release_cmd = True
+                release_cmd = Bool()
+                release_cmd.data = self.release_cmd
+                self.release_publisher.publish(release_cmd)
+                time.sleep(0.5)
+                self.state = 7
 
         elif self.state == 7:
-            self.shooting_cmd = False
-            self.move_cmd = True
-        
+            self.stepper_cmd = 0
+            if self.stepper == 0:
+                self.shooting_cmd = False
+                self.move_cmd = True
+
         #ここを付け足した置くため
         elif self.state == 8:
             self.move_cmd = False
-            self.stepper_cmd = 2
-            if self.stepper == 2:
+            self.stepper_cmd = 3
+            if self.stepper == 3:
                 self.release_cmd = False
                 release_cmd = Bool()
                 release_cmd.data = self.release_cmd
@@ -327,8 +331,8 @@ class State(Node):
         
         elif self.state == 10:
             self.shooting_cmd = False
-            self.stepper_cmd = 3
-            if self.stepper == 3:
+            self.stepper_cmd = 4
+            if self.stepper == 4:
                 self.state = 11
         
         elif self.state == 11:
