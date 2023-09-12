@@ -295,16 +295,26 @@ class State(Node):
             self.shooting_cmd = True
 
         elif self.state == 6:
-            self.stepper_cmd = 1
-            if self.stepper == 1:
-            # self.shooting_cmd = False
-                self.release_cmd = True
-                release_cmd = Bool()
-                release_cmd.data = self.release_cmd
-                self.release_publisher.publish(release_cmd)
-                time.sleep(0.5)
-                self.state = 7
-
+            if self.box == 6:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
+                    self.release_cmd = True
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.5)
+                    self.state = 7
+            elif self.box < 6:
+                self.stepper_cmd = 1
+                if self.stepper == 1:
+                # self.shooting_cmd = False
+                    self.release_cmd = True
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.5)
+                    self.state = 7
+                    
         elif self.state == 7:
             self.stepper_cmd = 0
             if self.stepper == 0:
