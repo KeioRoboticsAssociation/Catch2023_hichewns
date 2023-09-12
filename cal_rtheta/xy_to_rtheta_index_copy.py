@@ -8,7 +8,6 @@ from std_msgs.msg import Float32MultiArray
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float32
 from catch2023_interfaces.msg import CreateMessage
-from catch2023_interfaces.msg import CreateMessage_copy
 import math
 import time
 
@@ -18,7 +17,7 @@ class XY_to_Rtheta(Node):
     def __init__(self):
         #publisher
         super().__init__('xy_to_rtheta')
-        self.degpos_publisher = self.create_publisher(CreateMessage_copy, 'degpos_data', 10)
+        self.degpos_publisher = self.create_publisher(CreateMessage, 'degpos_data', 10)
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         # self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
         #subscriber
@@ -47,7 +46,7 @@ class XY_to_Rtheta(Node):
         self.release = 0.0
         self.init = 0.0
         self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.cur_x = 0.0
         self.cur_y = 0.0
         self.target_x = 0.0
@@ -94,7 +93,7 @@ class XY_to_Rtheta(Node):
         self.init = init_msg.data
         if self.init == True:
             self.currentPos = [math.pi/2, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0]
-            self.degPos = [90.0, 0.0, 0.0, 0.0, 0.0, True]
+            self.degPos = [90.0, 0.0, 0.0, 0.0, 0.0, True, True, True, True]
     
     def real_pos_callback(self,real_pos_msg):
         self.real_theta = real_pos_msg.theta
@@ -120,6 +119,24 @@ class XY_to_Rtheta(Node):
         
         elif cmd_state_msg.data == 'r':
             self.degPos[5] = False
+        
+        if cmd_state_msg.data == 'c1':
+            self.degPos[6] = True
+        
+        elif cmd_state_msg.data == 'r1':
+            self.degPos[6] = False
+        
+        if cmd_state_msg.data == 'c2':
+            self.degPos[7] = True
+        
+        elif cmd_state_msg.data == 'r2':
+            self.degPos[7] = False
+        
+        if cmd_state_msg.data == 'c3':
+            self.degPos[8] = True
+        
+        elif cmd_state_msg.data == 'r3':
+            self.degPos[8] = False
     
 
             
@@ -392,6 +409,9 @@ class XY_to_Rtheta(Node):
         degpos_data.armtheta = self.degPos[3]
         degpos_data.hand= self.degPos[4]
         degpos_data.judge = bool(self.degPos[5])
+        degpos_data.hand1 = bool(self.degPos[6])
+        degpos_data.hand2 = bool(self.degPos[7])
+        degpos_data.hand3 = bool(self.degPos[8])
         self.degpos_publisher.publish(degpos_data)
 
 def main():

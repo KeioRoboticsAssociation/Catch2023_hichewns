@@ -46,7 +46,7 @@ class XY_to_Rtheta(Node):
         self.release = 0.0
         self.init = 0.0
         self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, [0,0,0]]
         self.cur_x = 0.0
         self.cur_y = 0.0
         self.target_x = 0.0
@@ -93,7 +93,7 @@ class XY_to_Rtheta(Node):
         self.init = init_msg.data
         if self.init == True:
             self.currentPos = [math.pi/2, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0]
-            self.degPos = [90.0, 0.0, 0.0, 0.0, 0.0, True]
+            self.degPos = [90.0, 0.0, 0.0, 0.0, 0.0, True, [1,1,1]]
     
     def real_pos_callback(self,real_pos_msg):
         self.real_theta = real_pos_msg.theta
@@ -119,8 +119,24 @@ class XY_to_Rtheta(Node):
         
         elif cmd_state_msg.data == 'r':
             self.degPos[5] = False
-    
-
+        
+        if cmd_state_msg.data == 'c1':
+            self.degPos[6][0] = 1
+        
+        elif cmd_state_msg.data == 'r1':
+            self.degPos[6][0] = 0
+        
+        if cmd_state_msg.data == 'c2':
+            self.degPos[6][1] = 1
+        
+        elif cmd_state_msg.data == 'r2':
+            self.degPos[6][1] = 0
+        
+        if cmd_state_msg.data == 'c3':
+            self.degPos[6][2] = 1
+        
+        elif cmd_state_msg.data == 'r3':
+            self.degPos[6][2] = 0
             
     def move_callback(self,move_msg):
         self.move_cmd = move_msg.data
@@ -394,6 +410,7 @@ class XY_to_Rtheta(Node):
         degpos_data.armtheta = self.degPos[3]
         degpos_data.hand= self.degPos[4]
         degpos_data.judge = bool(self.degPos[5])
+        degpos_data.hand_state = self.degPos[6]
         self.degpos_publisher.publish(degpos_data)
 
 def main():
