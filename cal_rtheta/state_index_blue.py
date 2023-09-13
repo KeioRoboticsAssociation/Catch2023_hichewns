@@ -74,12 +74,22 @@ class State(Node):
         self.is_manual = False
         self.manual_flag = True
 
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_red.csv', 'r') as f:
+        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_red.csv', 'r') as f:
+        #     reader = csv.reader(f)
+        #     for row in reader:
+        #         self.red_own_target.append([float(row[0]),float(row[1])])
+
+        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting_red.csv', 'r') as f:
+        #     reader1 = csv.reader(f)
+        #     for row in reader1:
+        #         self.red_shooting_box.append([float(row[0]),float(row[1])])
+
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_blue.csv', 'r') as f:
             reader = csv.reader(f)
             for row in reader:
                 self.red_own_target.append([float(row[0]),float(row[1])])
-
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting_red.csv', 'r') as f:
+        
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting_blue.csv', 'r') as f:
             reader1 = csv.reader(f)
             for row in reader1:
                 self.red_shooting_box.append([float(row[0]),float(row[1])])
@@ -144,13 +154,13 @@ class State(Node):
     
     def target_pose_callback(self,targetpos):
         self.red_own_target[self.index] = targetpos.data
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_pose.csv','w') as f:
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_pose_blue.csv','w') as f:
             writer = csv.writer(f)
             writer.writerows(self.red_own_target)
     
     def shooting_pose_callback(self,shootingpos):
         self.red_shooting_box[self.box] = shootingpos.data
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_shooting.csv','w') as f:
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_shooting_blue.csv','w') as f:
             writer = csv.writer(f)
             writer.writerows(self.red_shooting_box)
     

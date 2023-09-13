@@ -18,33 +18,22 @@ def generate_launch_description():
 
         # Node(
         #     package="cal_rtheta",
-        #     executable='state_index_forprevent',
-        #     name='state_index_forprevent',
-        #     arguments=[urdf]),
-
-        # Node(
-        #     package="cal_rtheta",
         #     executable='index',
         #     name='index',
         #     arguments=[urdf]),
 
         Node(
             package="cal_rtheta",
-            executable='state_index',
-            name='state_index',
+            executable='state_index_blue',
+            name='state_index_blue',
             arguments=[urdf, csv]),
 
+        
         Node(
             package="cal_rtheta",
-            executable='xy_to_rtheta_index',
-            name='xy_to_rtheta_index',
+            executable='xy_to_rtheta_index_blue',
+            name='xy_to_rtheta_index_blue',
             arguments=[urdf]),
-        
-        # Node(
-        #     package="cal_rtheta",
-        #     executable='xy_to_rtheta_index_copy',
-        #     name='xy_to_rtheta_index_copy',
-        #     arguments=[urdf]),
 
         
         Node(

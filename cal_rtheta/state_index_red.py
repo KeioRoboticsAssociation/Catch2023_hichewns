@@ -3,6 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import Bool
 from std_msgs.msg import Float32MultiArray
 from std_msgs.msg import Int32MultiArray
+from std_msgs.msg import Float32
 from std_msgs.msg import String
 from std_msgs.msg import Int8
 from catch2023_interfaces.msg import CreateMessage
@@ -13,6 +14,7 @@ import math
 class State(Node):
     def __init__(self):
         super().__init__('state')
+        self.ping_publisher = self.create_publisher(Bool, 'ping', 10)
         self.real_pos_subscription = self.create_subscription(CreateMessage, 'real_pos', self.real_pos_callback, 10)
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
         self.pose_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
@@ -20,10 +22,11 @@ class State(Node):
         self.target_pose_subscription = self.create_subscription(Float32MultiArray, 'target_pose', self.target_pose_callback,10)
         self.shooting_pose_subscription = self.create_subscription(Float32MultiArray, 'shooting_pose', self.shooting_pose_callback,10)
         self.target_comp_subscription = self.create_subscription(Bool, 'target_comp', self.target_comp_callback, 10)
-        self.target_comp_r_subscription = self.create_subscription(Bool, 'target_comp_r', self.target_comp_r_callback, 10)
+        # self.target_comp_r_subscription = self.create_subscription(Bool, 'target_comp_r', self.target_comp_r_callback, 10)
         
+        self.target_error_subscription = self.create_subscription(Float32, 'target_error', self.target_error_callback, 10)
         self.targetcomp_publisher = self.create_publisher(Bool, 'target_comp', 10)
-        self.target_comp_r_publisher = self.create_publisher(Bool, 'target_comp_r', 10)
+        # self.target_comp_r_publisher = self.create_publisher(Bool, 'target_comp_r', 10)
         self.shooting_comp_subscription = self.create_subscription(Bool, 'shooting_comp', self.shooting_comp_callback, 10)
         self.shooting_comp_publisher = self.create_publisher(Bool, 'shooting_comp', 10)
         self.state_publisher = self.create_publisher(Int32MultiArray, 'state_data', 10)
@@ -56,6 +59,7 @@ class State(Node):
         self.state_data = [0,0,0]
         self.target_comp = False
         self.target_comp_r = False
+        self.ping = True
 
         self.shooting_comp = False
         self.catched = False
@@ -80,19 +84,37 @@ class State(Node):
             for row in reader1:
                 self.red_shooting_box.append([float(row[0]),float(row[1])])
 
+        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/pose_blue.csv', 'r') as f:
+        #     reader = csv.reader(f)
+        #     for row in reader:
+        #         self.red_own_target.append([float(row[0]),float(row[1])])
+        
+        # with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/shooting_blue.csv', 'r') as f:
+        #     reader1 = csv.reader(f)
+        #     for row in reader1:
+        #         self.red_shooting_box.append([float(row[0]),float(row[1])])
+
 
     def is_manual_callback(self,manualmsg):
         self.is_manual = manualmsg.data
+    
+    def target_error_callback(self, target_error_msg):
+        self.target_error = target_error_msg.data
+        if self.target_error < 2.0:
+            self.target_comp_r = True
+        else:
+            self.target_comp_r = False
 
     def index_callback(self,index_msg):
         self.index = index_msg.data
         self.move_cmd = False
+        self.target_cmd = True
         self.state = 1
     
     def target_comp_callback(self, target_comp_msg):
         self.target_comp = target_comp_msg.data
-        if self.target_comp == True:
-            self.target_cmd = False
+        # if self.target_comp == True:
+        #     self.target_cmd = False
             # self.state = 2
     
     def target_comp_r_callback(self, target_comp_r_msg):
@@ -113,23 +135,32 @@ class State(Node):
             shootingcomp = Bool()
             shootingcomp.data = self.shooting_comp
             self.shooting_comp_publisher.publish(shootingcomp)
-
-            self.state = 6
+            if not self.is_manual:
+            #ここを付け足した置くよう
+                if self.box == 7:
+                    self.state = 10
+                elif self.box < 7:
+                    time.sleep(2.0)
+                    self.state = 6
 
     def shooting_index_callback(self,shooting_index_msg):
         self.box = shooting_index_msg.data
         self.move_cmd = False
-        self.state = 5
+        if self.box == 7:
+            self.red_own_target.append(self.red_shooting_box[7])
+            self.state = 8
+        elif self.box < 7:
+            self.state = 5
     
     def target_pose_callback(self,targetpos):
         self.red_own_target[self.index] = targetpos.data
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_pose.csv','w') as f:
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_pose_red.csv','w') as f:
             writer = csv.writer(f)
             writer.writerows(self.red_own_target)
     
     def shooting_pose_callback(self,shootingpos):
         self.red_shooting_box[self.box] = shootingpos.data
-        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_shooting.csv','w') as f:
+        with open('/home/moyuboo/ros2_ws/src/catch2023/cal_rtheta/csv/re_shooting_red.csv','w') as f:
             writer = csv.writer(f)
             writer.writerows(self.red_shooting_box)
     
@@ -138,6 +169,14 @@ class State(Node):
             self.next = True
 
         if self.next == True:
+            if self.state == 1:
+                self.target_comp = False
+                targetcomp = Bool()
+                targetcomp.data = self.target_comp
+                self.targetcomp_publisher.publish(targetcomp)
+                self.target_comp_r = False
+                self.target_cmd = False
+
             self.state += 1
             time.sleep(0.5)
             if self.state > 7:
@@ -172,12 +211,12 @@ class State(Node):
             self.init_publisher.publish(init_msg)
 
         elif self.state == 1:
-            self.target_cmd = True
+            # self.target_cmd = True
+            self.move_cmd = False
             self.release_cmd = True
             release_cmd = Bool()
             release_cmd.data = self.release_cmd
             self.release_publisher.publish(release_cmd)
-            self.move_cmd = False
             self.target_cmd = True
             servo_cmd = Int8()
             if self.index < 6:
@@ -189,28 +228,43 @@ class State(Node):
             self.servo_publisher.publish(servo_cmd) 
 
             if self.target_comp == True:
-                self.stepper_cmd = 1
-                self.target_comp = False
-                targetcomp = Bool()
-                targetcomp.data = self.target_comp
-                self.targetcomp_publisher.publish(targetcomp)
+                self.stepper_cmd = 2
 
             if self.target_comp_r == True:
-                if self.stepper == 1:
+                if self.stepper == 2:
                     if not self.is_manual:
-                        self.target_cmd = False
+                        self.target_comp = False
+                        targetcomp = Bool()
+                        targetcomp.data = self.target_comp
+                        self.targetcomp_publisher.publish(targetcomp)
                         self.target_comp_r = False
-                        targetcomp_r = Bool()
-                        targetcomp_r.data = self.target_comp_r
-                        self.target_comp_r_publisher.publish(targetcomp_r)
+                        self.target_cmd = False
                         self.state = 2
-        
+                    elif self.is_manual:
+                        if self.box == 7:
+                            self.state = 8
+
+            # targetcomp_r = Bool()
+            # targetcomp_r.data = self.target_comp_r
+            # self.target_comp_r_publisher.publish(targetcomp_r)
+                        
         elif self.state == 2:
             self.move_cmd = False
+
         #ここコメントにした
-            if self.index > 5:
-                self.stepper_cmd = 2
-                if self.stepper == 2:
+
+            if self.index <= 5 or self.index == 15:
+                self.stepper_cmd = 5
+                if self.stepper == 5:
+                    self.release_cmd = False
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.2)
+                    self.state = 3
+            elif self.index > 5:
+                self.stepper_cmd = 3
+                if self.stepper == 3:
                     self.release_cmd = False
                     release_cmd = Bool()
                     release_cmd.data = self.release_cmd
@@ -218,32 +272,32 @@ class State(Node):
                     time.sleep(0.5)
                     self.state = 3
 
-            elif self.index <= 5:
-                self.stepper_cmd = 3
-                if self.stepper == 3:
-                    self.release_cmd = False
-                    release_cmd = Bool()
-                    release_cmd.data = self.release_cmd
-                    self.release_publisher.publish(release_cmd)
-                    time.sleep(0.2)
-                    self.state = 3
-
         elif self.state == 3:
             # self.target_cmd = False
             self.move_cmd = False
             if self.index == 0:
-                self.stepper_cmd = 1
-                if self.stepper == 1:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
                     self.box = 6
                     self.state = 4
-            self.stepper_cmd = 1
-            if self.stepper == 1:
+
+            elif self.index < 5:
                 self.state = 4
+
+            elif self.index > 5:
+                self.stepper_cmd = 0
+                if self.stepper == 0:
+                    self.state = 4
+
+            elif self.index == 5:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
+                    self.state = 4
 
         elif self.state == 4:
             self.move_cmd = True
             if self.index == 0:
-                self.stepper_cmd = 1
+                self.stepper_cmd = 2
             self.stepper_cmd = 0
             
         elif self.state == 5:
@@ -251,20 +305,77 @@ class State(Node):
             self.shooting_cmd = True
 
         elif self.state == 6:
-            # self.shooting_cmd = False
+            if self.box == 6:
+                self.stepper_cmd = 2
+                if self.stepper == 2:
+                    self.release_cmd = True
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.5)
+                    self.state = 7
+            elif self.box < 6:
+                self.stepper_cmd = 1
+                if self.stepper == 1:
+                # self.shooting_cmd = False
+                    self.release_cmd = True
+                    release_cmd = Bool()
+                    release_cmd.data = self.release_cmd
+                    self.release_publisher.publish(release_cmd)
+                    time.sleep(0.5)
+                    self.state = 7
+                    
+        elif self.state == 7:
+            self.stepper_cmd = 0
+            if self.stepper == 0:
+                self.shooting_cmd = False
+                self.move_cmd = True
+
+        #ここを付け足した置くため
+        elif self.state == 8:
+            self.move_cmd = False
+            self.stepper_cmd = 3
+            if self.stepper == 3:
+                self.release_cmd = False
+                release_cmd = Bool()
+                release_cmd.data = self.release_cmd
+                self.release_publisher.publish(release_cmd)
+                time.sleep(0.5)
+                self.state = 9
+        
+        elif self.state == 9:
+            self.move_cmd = False
+            self.stepper_cmd = 0
+            self.target_cmd = False
+            if self.stepper == 0:
+                self.shooting_cmd = True
+        
+        elif self.state == 10:
+            self.shooting_cmd = False
+            self.stepper_cmd = 4
+            if self.stepper == 4:
+                self.state = 11
+        
+        elif self.state == 11:
             self.release_cmd = True
             release_cmd = Bool()
             release_cmd.data = self.release_cmd
             self.release_publisher.publish(release_cmd)
             time.sleep(0.5)
-            self.state = 7
+            self.state = 12
+    
+        elif self.state == 12:
+            self.stepper_cmd = 0
+            if self.stepper == 0:
+                self.box = 0
+                self.state = 7
+        
+        ping_data = Bool()
+        ping_data.data = self.ping
+        self.ping_publisher.publish(ping_data)
 
-        elif self.state == 7:
-            self.shooting_cmd = False
-            self.move_cmd = True
-           
         #state_publish
-        self.state_data = [self.state, self.cnt, self.box]
+        self.state_data = [self.state, self.index, self.box]
         state_data = Int32MultiArray()
         state_data.data = self.state_data
         self.state_publisher.publish(state_data)
@@ -297,64 +408,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-# import os
-# import sys
-# import rclpy
-# from rclpy.node import Node
-# from geometry_msgs.msg import Point
-
-# # class Input(Node):
-# #     def __init__(self):
-# #         super().__init__('input')
-# #         self.publisher_ = self.create_publisher(Point, 'input', 1)
-# #         self.timer_period = 5.0
-# #         self.timer = self.create_timer(self.timer_period, self.publish_coordinates)
-
-# #     def publish_coordinates(self):
-# #         coordinates = [
-# #             (0.0, 0.5),
-# #         ]
-
-# #         for coord in coordinates:
-# #             msg = Point()
-# #             msg.x, msg.y= coord
-# #             self.publisher_.publish(msg)
-# #             self.get_logger().info(f"Published coordinate: {msg.x}, {msg.y}")
-
-# # def main(args=None):
-# #     rclpy.init(args=args)
-# #     node = Input()
-# #     rclpy.spin(node)
-# #     rclpy.shutdown()
-
-# # if __name__ == '__main__':
-# #     main()
-# def main(args=None):
-#     rclpy.init(args=args)
-
-#     node = rclpy.create_node('input')
-
-#     publisher = node.create_publisher(Point, 'input', 10)
-
-#     msg = Point()
-
-#     while rclpy.ok():
-#         x=float(input('Enter X: '))
-#         y=float(input('Enter Y: '))
-#         msg.x = x
-#         msg.y = y
-#         node.get_logger().info('Publishing: "%s"' % msg)
-#         publisher.publish(msg)
-#         # sleep.tim(0.5)  # seconds
-
-#     # Destroy the node explicitly
-#     # (optional - otherwise it will be done automatically
-#     # when the garbage collector destroys the node object)
-#     node.destroy_node()
-#     rclpy.shutdown()
-
-# if __name__ == '__main__':
-#     main() 
+    
