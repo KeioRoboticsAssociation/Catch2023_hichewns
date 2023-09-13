@@ -257,8 +257,11 @@ class XY_to_Rtheta(Node):
 
             if self.index == 1:
                 self.target_error_th = 60.0
-            elif not self.index == 1:
+            elif not self.index == 1 and self.index < 6:
                 self.target_error_th = 120.0
+            
+            elif self.index >= 6:
+                self.target_error_th = 60.0
   
             if self.target_error < self.target_error_th:
                 self.target_comp  = True

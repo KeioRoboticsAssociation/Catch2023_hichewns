@@ -140,7 +140,7 @@ class State(Node):
                 if self.box == 7:
                     self.state = 10
                 elif self.box < 7:
-                    time.sleep(2.0)
+                    time.sleep(0.8)
                     self.state = 6
 
     def shooting_index_callback(self,shooting_index_msg):

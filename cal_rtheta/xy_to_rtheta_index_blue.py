@@ -92,8 +92,8 @@ class XY_to_Rtheta(Node):
     def init_callback(self,init_msg):
         self.init = init_msg.data
         if self.init == True:
-            self.currentPos = [math.pi/2, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0]
-            self.degPos = [90.0, 0.0, 0.0, 0.0, 0.0, [1,1,1]]
+            self.currentPos = [-math.pi/2, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0]
+            self.degPos = [-90.0, 0.0, 0.0, 0.0, 0.0, [1,1,1]]
     
     def real_pos_callback(self,real_pos_msg):
         self.real_theta = real_pos_msg.theta
@@ -180,9 +180,6 @@ class XY_to_Rtheta(Node):
         self.currentPos[0]=math.atan2(self.target_y,self.target_x)
         self.degPos[0]=math.degrees(math.atan2(self.target_y,self.target_x))
 
-        if self.degPos[0] < 0:
-            self.degPos[0] += 360.0
-
         self.target_error = float(self.degPos[0] - self.real_theta)   
         self.target_error = abs(self.target_error)   
 
@@ -204,6 +201,8 @@ class XY_to_Rtheta(Node):
             self.degPos[3] = (90 - self.degPos[0]) + 45 + self.degrev
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            elif self.degPos[3] > 180.0:
+                self.degPos[3] -= 180.0
             self.index_prev = self.index
 
         elif self.index >= 6:
@@ -217,6 +216,8 @@ class XY_to_Rtheta(Node):
             self.degPos[3] = -self.degPos[0] + self.degrev
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            elif self.degPos[3] > 180.0:
+                self.degPos[3] -= 180.0
             self.index_prev = self.index
         
         if self.armtheta > 0:
@@ -260,8 +261,11 @@ class XY_to_Rtheta(Node):
 
             if self.index == 1:
                 self.target_error_th = 60.0
-            elif not self.index == 1:
+            elif not self.index == 1 and self.index < 6:
                 self.target_error_th = 120.0
+            
+            elif self.index >= 6:
+                self.target_error_th = 60.0
   
             if self.target_error < self.target_error_th:
                 self.target_comp  = True
@@ -363,6 +367,8 @@ class XY_to_Rtheta(Node):
             self.degPos[3] = -self.degPos[0] + self.degrev_shooting
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            elif self.degPos[3] > 180.0:
+                self.degPos[3] -= 180.0
             self.shooting_index_prev = self.shooting_index
         
         elif self.shooting_index < 7:
@@ -374,6 +380,8 @@ class XY_to_Rtheta(Node):
             self.degPos[3]=-(self.degPos[0] - 90.0) + self.degrev_shooting
             if self.degPos[3] < 0:
                 self.degPos[3] += 180.0
+            elif self.degPos[3] > 180.0:
+                self.degPos[3] -= 180.0
             self.degPos[4]=0.0
             self.shooting_index_prev = self.shooting_index
 

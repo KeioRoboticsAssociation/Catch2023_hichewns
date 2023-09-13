@@ -30,7 +30,7 @@ class Joy_operation(Node):
         self.init = 0.0
         self.grasp = Bool()
         self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, [0,0,0]]
 
     def joy_callback(self, joy_msg):
         self.theta = joy_msg.data[0]
@@ -56,8 +56,8 @@ class Joy_operation(Node):
             self.degPos[0] -= math.degrees(abs(self.theta) / 100)
             if self.currentPos[0]<=0.0:
                 self.currentPos[0]=0.0
-            if self.degPos[0]<=0.0:
-                self.degPos[0]=0.0
+            # if self.degPos[0]<=0.0:
+            #     self.degPos[0]=0.0
 
         if self.y > 0:
             self.currentPos[1] += self.y / 500
@@ -109,11 +109,11 @@ class Joy_operation(Node):
 
         if self.catch==1.0:
             self.grasp.data = True
-            self.degPos[5] = True
+            self.degPos[5] = [1,1,1]
         
         if self.release==1.0:
             self.grasp.data = False
-            self.degPos[5] = False
+            self.degPos[5] = [0,0,0]
 
         # self.catch_judge_publisher.publish(self.grasp)
         
@@ -151,7 +151,7 @@ class Joy_operation(Node):
         degpos_data.stepper = int(self.degPos[2])
         degpos_data.armtheta = self.degPos[3]
         degpos_data.hand= self.degPos[4]
-        degpos_data.judge = bool(self.degPos[5])
+        degpos_data.hand_state = self.degPos[5]
         # degpos_data.data = self.degPos
         # degpos_data.data[1]*=1000
         self.degpos_publisher.publish(degpos_data)
