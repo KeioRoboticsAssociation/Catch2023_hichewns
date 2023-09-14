@@ -256,21 +256,23 @@ class State(Node):
             if self.index <= 5 or self.index == 15:
                 self.stepper_cmd = 5
                 if self.stepper == 5:
-                    self.release_cmd = False
-                    release_cmd = Bool()
-                    release_cmd.data = self.release_cmd
-                    self.release_publisher.publish(release_cmd)
-                    time.sleep(0.2)
-                    self.state = 3
+                    if not self.is_manual:
+                        self.release_cmd = False
+                        release_cmd = Bool()
+                        release_cmd.data = self.release_cmd
+                        self.release_publisher.publish(release_cmd)
+                        time.sleep(0.2)
+                        self.state = 3
             elif self.index > 5:
                 self.stepper_cmd = 3
                 if self.stepper == 3:
-                    self.release_cmd = False
-                    release_cmd = Bool()
-                    release_cmd.data = self.release_cmd
-                    self.release_publisher.publish(release_cmd)
-                    time.sleep(0.5)
-                    self.state = 3
+                    if not self.is_manual:
+                        self.release_cmd = False
+                        release_cmd = Bool()
+                        release_cmd.data = self.release_cmd
+                        self.release_publisher.publish(release_cmd)
+                        time.sleep(0.5)
+                        self.state = 3
 
         elif self.state == 3:
             # self.target_cmd = False
@@ -281,7 +283,7 @@ class State(Node):
                     self.box = 6
                     self.state = 4
 
-            elif self.index < 5:
+            elif not self.index == 0 and self.index < 5:
                 self.state = 4
 
             elif self.index > 5:
@@ -298,7 +300,9 @@ class State(Node):
             self.move_cmd = True
             if self.index == 0:
                 self.stepper_cmd = 2
-            self.stepper_cmd = 0
+            
+            elif not self.index == 0:
+                self.stepper_cmd = 0
             
         elif self.state == 5:
             self.move_cmd = False
@@ -308,22 +312,24 @@ class State(Node):
             if self.box == 6:
                 self.stepper_cmd = 2
                 if self.stepper == 2:
-                    self.release_cmd = True
-                    release_cmd = Bool()
-                    release_cmd.data = self.release_cmd
-                    self.release_publisher.publish(release_cmd)
-                    time.sleep(0.5)
-                    self.state = 7
+                    if not self.is_manual:
+                        self.release_cmd = True
+                        release_cmd = Bool()
+                        release_cmd.data = self.release_cmd
+                        self.release_publisher.publish(release_cmd)
+                        time.sleep(0.5)
+                        self.state = 7
             elif self.box < 6:
                 self.stepper_cmd = 1
                 if self.stepper == 1:
+                    if not self.is_manual:
                 # self.shooting_cmd = False
-                    self.release_cmd = True
-                    release_cmd = Bool()
-                    release_cmd.data = self.release_cmd
-                    self.release_publisher.publish(release_cmd)
-                    time.sleep(0.5)
-                    self.state = 7
+                        self.release_cmd = True
+                        release_cmd = Bool()
+                        release_cmd.data = self.release_cmd
+                        self.release_publisher.publish(release_cmd)
+                        time.sleep(0.5)
+                        self.state = 7
                     
         elif self.state == 7:
             self.stepper_cmd = 0

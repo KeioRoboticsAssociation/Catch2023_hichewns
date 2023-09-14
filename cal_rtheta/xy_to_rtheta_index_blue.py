@@ -89,6 +89,8 @@ class XY_to_Rtheta(Node):
         self.flag = 1
         self.rev = 0.0 #hand1-3
 
+        self.is_change = False
+
     def init_callback(self,init_msg):
         self.init = init_msg.data
         if self.init == True:
@@ -102,18 +104,12 @@ class XY_to_Rtheta(Node):
     
     def release_callback(self,release_msg):
         if release_msg.data == True:
-            # self.degPos[5] = False
-            # self.degPos[6][0] = 0
-            # self.degPos[6][1] = 0
-            # self.degPos[6][2] = 0
-            self.degPos[5] = [0,0,0]
-        
+            if self.is_change == False:
+                self.degPos[5] = [0,0,0]
+
         elif release_msg.data == False:
-            # self.degPos[5] = True
-            # self.degPos[6][0] = 1
-            # self.degPos[6][1] = 1
-            # self.degPos[6][2] = 1
-            self.degPos[5] = [1,1,1]
+            if self.is_change == False:
+                self.degPos[5] = [1,1,1]
     
     def index_callback(self,index_msg):
         self.index = index_msg.data
@@ -125,28 +121,36 @@ class XY_to_Rtheta(Node):
         if cmd_state_msg.data == 'c':
             # self.degPos[5] = True
             self.degPos[5] = [1,1,1]
+            self.is_change = False
         
         elif cmd_state_msg.data == 'r':
             # self.degPos[5] = False
             self.degPos[5] = [0,0,0]
+            self.is_change = False
         
         if cmd_state_msg.data == 'c0':
             self.degPos[5][0] = 1
+            self.is_change = True
         
         elif cmd_state_msg.data == 'r0':
             self.degPos[5][0] = 0
+            self.is_change = True
         
         if cmd_state_msg.data == 'c1':
             self.degPos[5][1] = 1
+            self.is_change = True
         
         elif cmd_state_msg.data == 'r1':
             self.degPos[5][1] = 0
+            self.is_change = True
         
         if cmd_state_msg.data == 'c2':
             self.degPos[5][2] = 1
+            self.is_change = True
         
         elif cmd_state_msg.data == 'r2':
             self.degPos[5][2] = 0
+            self.is_change = True
             
     def move_callback(self,move_msg):
         self.move_cmd = move_msg.data
