@@ -139,7 +139,7 @@ class State(Node):
             #ここを付け足した置くよう
                 if self.box == 7:
                     self.state = 10
-                elif self.box < 7:
+                elif not self.box == 7:
                     time.sleep(0.8)
                     self.state = 6
 
@@ -149,7 +149,7 @@ class State(Node):
         if self.box == 7:
             self.red_own_target.append(self.red_shooting_box[7])
             self.state = 8
-        elif self.box < 7:
+        elif not self.box == 7:
             self.state = 5
     
     def target_pose_callback(self,targetpos):
@@ -309,7 +309,7 @@ class State(Node):
             self.shooting_cmd = True
 
         elif self.state == 6:
-            if self.box == 6:
+            if self.box == 6 or self.box == 8:
                 if self.index == 0:
                     self.stepper_cmd = 1
                     if self.stepper == 1:

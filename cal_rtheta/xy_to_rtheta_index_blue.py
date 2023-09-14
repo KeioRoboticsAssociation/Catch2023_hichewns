@@ -225,12 +225,16 @@ class XY_to_Rtheta(Node):
             self.index_prev = self.index
         
         if self.armtheta > 0:
-                self.rev += self.armtheta / 50
-                self.degrev += math.degrees(self.armtheta / 50)
+            self.rev += self.armtheta / 50
+            self.degrev += math.degrees(self.armtheta / 50)
+            if self.degrev > 180:
+                self.degrev = 180
             
         elif self.armtheta < 0:
-                self.rev -= abs(self.armtheta) / 50
-                self.degrev -= math.degrees(abs(self.armtheta) / 50)
+            self.rev -= abs(self.armtheta) / 50
+            self.degrev -= math.degrees(abs(self.armtheta) / 50)
+            if self.degrev < 0:
+                self.degrev = 0
 
         if self.target_error <= self.ERROR_target_theta:
             self.currentPos[1]=math.sqrt(self.target_x**2+self.target_y**2) - 0.407
@@ -375,7 +379,8 @@ class XY_to_Rtheta(Node):
                 self.degPos[3] -= 180.0
             self.shooting_index_prev = self.shooting_index
         
-        elif self.shooting_index < 7:
+        # elif self.shooting_index < 7:
+        elif not self.shooting_index == 7:
             self.currentPos[3]=-(self.currentPos[0] - math.pi/2) + self.rev_shooting
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
@@ -391,12 +396,16 @@ class XY_to_Rtheta(Node):
 
 
         if self.armtheta > 0:
-                self.rev_shooting += self.armtheta / 50
-                self.degrev_shooting += math.degrees(self.armtheta / 50)
+            self.rev_shooting += self.armtheta / 50
+            self.degrev_shooting += math.degrees(self.armtheta / 50)
+            if self.degrev_shooting > 180:
+                self.degrev_shooting = 180.0
             
         elif self.armtheta < 0:
-                self.rev_shooting -= abs(self.armtheta) / 50
-                self.degrev_shooting -= math.degrees(abs(self.armtheta) / 50)
+            self.rev_shooting -= abs(self.armtheta) / 50
+            self.degrev_shooting -= math.degrees(abs(self.armtheta) / 50)
+            if self.degrev_shooting < 0:
+                self.degrev_shooting = 0.0
 
     
     def stepper_callback(self,msg):
