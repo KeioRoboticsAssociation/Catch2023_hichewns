@@ -278,8 +278,8 @@ class State(Node):
             # self.target_cmd = False
             self.move_cmd = False
             if self.index == 0:
-                self.stepper_cmd = 2
-                if self.stepper == 2:
+                self.stepper_cmd = 1
+                if self.stepper == 1:
                     self.box = 6
                     self.state = 4
 
@@ -299,7 +299,7 @@ class State(Node):
         elif self.state == 4:
             self.move_cmd = True
             if self.index == 0:
-                self.stepper_cmd = 2
+                self.stepper_cmd = 1
             
             elif not self.index == 0:
                 self.stepper_cmd = 0
@@ -310,15 +310,27 @@ class State(Node):
 
         elif self.state == 6:
             if self.box == 6:
-                self.stepper_cmd = 2
-                if self.stepper == 2:
-                    if not self.is_manual:
-                        self.release_cmd = True
-                        release_cmd = Bool()
-                        release_cmd.data = self.release_cmd
-                        self.release_publisher.publish(release_cmd)
-                        time.sleep(0.5)
-                        self.state = 7
+                if self.index == 0:
+                    self.stepper_cmd = 1
+                    if self.stepper == 1:
+                        if not self.is_manual:
+                            self.release_cmd = True
+                            release_cmd = Bool()
+                            release_cmd.data = self.release_cmd
+                            self.release_publisher.publish(release_cmd)
+                            time.sleep(0.5)
+                            self.state = 7
+                elif not self.index == 0:
+                    self.stepper_cmd = 2
+                    if self.stepper == 2:
+                        if not self.is_manual:
+                            self.release_cmd = True
+                            release_cmd = Bool()
+                            release_cmd.data = self.release_cmd
+                            self.release_publisher.publish(release_cmd)
+                            time.sleep(0.5)
+                            self.state = 7
+
             elif self.box < 6:
                 self.stepper_cmd = 1
                 if self.stepper == 1:
