@@ -280,7 +280,6 @@ class State(Node):
             if self.index == 0:
                 self.stepper_cmd = 1
                 if self.stepper == 1:
-                    self.box = 6
                     self.state = 4
 
             elif not self.index == 0 and self.index < 5:
@@ -300,7 +299,10 @@ class State(Node):
             self.move_cmd = True
             if self.index == 0:
                 self.stepper_cmd = 1
-            
+                if self.stepper == 1:
+                    self.box = 6
+                    self.state = 5
+
             elif not self.index == 0:
                 self.stepper_cmd = 0
  
