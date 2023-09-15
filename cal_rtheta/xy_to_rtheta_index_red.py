@@ -112,7 +112,9 @@ class XY_to_Rtheta(Node):
     
     def index_callback(self,index_msg):
         self.index = index_msg.data
-    
+        if self.index == 0:
+            self.shooting_index = 6
+        
     def shooting_index_callback(self,shooting_index_msg):
         self.shooting_index = shooting_index_msg.data
 
@@ -154,14 +156,14 @@ class XY_to_Rtheta(Node):
     def move_callback(self,move_msg):
         self.move_cmd = move_msg.data
         if self.move_cmd == True:
-            if self.degPos[1] > 0.10:
-                self.currentPos[1] = 0.10
+            if self.degPos[1] > 0.157:
+                self.currentPos[1] = 0.157
                 if self.currentPos[1] >= MAX_R:
                     self.currentPos[1] = MAX_R
                 elif self.currentPos[1] <= 0.0:
                     self.currentPos[1] = 0.0
 
-                self.degPos[1] = 0.10
+                self.degPos[1] = 0.157
                 if self.degPos[1] >= MAX_R:
                     self.degPos[1] = MAX_R
                 elif self.degPos[1] <= 0.0:
