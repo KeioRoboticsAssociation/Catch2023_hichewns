@@ -289,7 +289,6 @@ class State(Node):
             self.move_cmd = False
 
         #ここコメントにした
-
             if self.index <= 5 or self.index == 15:
                 self.stepper_cmd = self.STP_OWN_POS
                 if abs(self.stepper - self.STP_OWN_POS) <= 1:
@@ -300,6 +299,7 @@ class State(Node):
                         self.release_publisher.publish(release_cmd)
                         time.sleep(0.2)
                         self.state = 4
+                    
             elif self.index > 5:
                 self.stepper_cmd = self.STP_COMMON_POS
                 if abs(self.stepper - self.STP_COMMON_POS) <= 1:
@@ -314,12 +314,12 @@ class State(Node):
         elif self.state == 4:
             # self.target_cmd = False
             self.move_cmd = False
-            if self.index == 0:
-                self.stepper_cmd = self.STP_POI_POS
-                if abs(self.stepper - self.STP_POI_POS) <= 1:
-                    self.state = 5
+            # if self.index == 0:
+            #     self.stepper_cmd = self.STP_POI_POS
+            #     if abs(self.stepper - self.STP_POI_POS) <= 1:
+            #         self.state = 5
 
-            elif not self.index == 0 and self.index < 5:
+            if self.index < 5:
                 self.state = 5
 
             elif self.index > 5:
@@ -334,14 +334,14 @@ class State(Node):
 
         elif self.state == 5:
             self.move_cmd = True
-            if self.index == 0:
-                self.stepper_cmd = self.STP_POI_POS
-                if abs(self.stepper - self.STP_POI_POS) <= 1:
-                    self.box = 6
-                    self.state = 6
+            # if self.index == 0:
+            #     self.stepper_cmd = self.STP_POI_POS
+            #     if abs(self.stepper - self.STP_POI_POS) <= 1:
+            #         self.box = 6
+            #         self.state = 6
 
-            elif not self.index == 0:
-                self.stepper_cmd = self.STP_INIT_POS
+            # elif not self.index == 0:
+            self.stepper_cmd = self.STP_INIT_POS
             
         elif self.state == 6:
             self.move_cmd = False
