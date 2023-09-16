@@ -27,7 +27,7 @@ class XY_to_Rtheta(Node):
         self.shooting_error_publisher = self.create_publisher(Float32, 'shooting_error', 10)
         self.target_error_publisher = self.create_publisher(Float32, 'target_error', 10)
         self.joy_subscription = self.create_subscription(Float32MultiArray, 'joy_data', self.joy_callback, 10)
-        self.stepper_subscription = self.create_subscription(Int8, 'stepper_cmd', self.stepper_callback,10)
+        self.stepper_subscription = self.create_subscription(Int32, 'stepper_cmd', self.stepper_callback,10)
         self.target_subscription = self.create_subscription(Float32MultiArray, 'target_xy',self.target_callback,  10)
         self.shootingbox_subscripition = self.create_subscription(Float32MultiArray, 'shootingbox_xy', self.shooting_callback,10)
         self.release_subscription = self.create_subscription(Bool, 'release_cmd', self.release_callback, 10)
@@ -39,12 +39,15 @@ class XY_to_Rtheta(Node):
         self.target_comp_publisher = self.create_publisher(Bool, 'target_comp', 10)
         self.target_comp_r_publisher = self.create_publisher(Bool, 'target_comp_r', 10)
         self.shooting_comp_publisher = self.create_publisher(Bool, 'shooting_comp', 10)
+        
+        self.start_subscription = self.create_subscription(Bool, 'start', self.start_callback, 10)
         # self.joint_subscription = self.create_subscription(JointState, 'joint_states', self.joint_states_callback,10)
         
         self.tmr = self.create_timer(0.1, self.callback)
         self.catch = 0.0
         self.release = 0.0
         self.init = 0.0
+        self.start = False
         self.currentPos = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, [0,0,0]]
         self.cur_x = 0.0
@@ -53,7 +56,16 @@ class XY_to_Rtheta(Node):
         self.target_y = 0.0
         self.shooting_x = 0.0
         self.shooting_y = 0.0
-        self.stepper_pos = 0
+
+        self.STP_INIT_POS = 0 #0
+        self.STP_SHOOT_POS = 40 #1
+        self.STP_POI_POS = 110 #1.5
+        self.STP_SERCH_POS = 205 #2
+        self.STP_COMMON_POS = 220 #3
+        self.STP_PUT_POS = 250 #4
+        self.STP_OWN_POS = 270 #5
+        self.stepper_pos = self.STP_INIT_POS
+
         self.servo_cmd = 1
         self.real_r = 0.0
         self.real_theta = 0.0
@@ -90,6 +102,12 @@ class XY_to_Rtheta(Node):
         self.rev = 0.0 #hand1-3
 
         self.is_change = False
+    
+    def start_callback(self,start_msg):
+        self.start = start_msg.data
+        if self.start == True:
+            self.currentPos = [0.0, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0]
+            self.degPos = [0.0, 0.0, 0.0, 0.0, 0.0, [0,0,0]]
 
     def init_callback(self,init_msg):
         self.init = init_msg.data
@@ -414,22 +432,25 @@ class XY_to_Rtheta(Node):
         self.stepper_pos = msg.data
         self.degPos[2]= self.stepper_pos
 
-        if self.stepper_pos == 0:
+        if self.stepper_pos == self.STP_INIT_POS:
             self.currentPos[2] = 0.08
         
-        if self.stepper_pos == 1:
+        if self.stepper_pos == self.STP_POI_POS:
+            self.currentPos[2] = 0.07
+        
+        if self.stepper_pos == self.STP_SHOOT_POS:
             self.currentPos[2] = 0.06
         
-        if self.stepper_pos == 2:
+        if self.stepper_pos == self.STP_PUT_POS:
             self.currentPos[2] = 0.04
         
-        if self.stepper_pos == 3:
+        if self.stepper_pos == self.STP_COMMON_POS:
             self.currentPos[2] = -0.04
         
-        if self.stepper_pos == 4:
+        if self.stepper_pos == self.STP_PUT_POS:
             self.currentPos[2] = -0.06
         
-        if self.stepper_pos == 5:
+        if self.stepper_pos == self.STP_OWN_POS:
             self.currentPos[2] = -0.08
 
     
