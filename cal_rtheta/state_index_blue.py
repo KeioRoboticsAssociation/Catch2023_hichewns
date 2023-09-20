@@ -349,26 +349,26 @@ class State(Node):
 
         elif self.state == 7:
             if self.box == 6 or self.box == 8:
-                if self.index == 0:
-                    self.stepper_cmd = self.STP_POI_POS
-                    if abs(self.stepper - self.STP_POI_POS) <= 1:
-                        if not self.is_manual:
-                            self.release_cmd = True
-                            release_cmd = Bool()
-                            release_cmd.data = self.release_cmd
-                            self.release_publisher.publish(release_cmd)
-                            time.sleep(0.5)
-                            self.state = 8
-                elif not self.index == 0:
-                    self.stepper_cmd = self.STP_SERCH_POS
-                    if abs(self.stepper - self.STP_SERCH_POS) <= 1:
-                        if not self.is_manual:
-                            self.release_cmd = True
-                            release_cmd = Bool()
-                            release_cmd.data = self.release_cmd
-                            self.release_publisher.publish(release_cmd)
-                            time.sleep(0.5)
-                            self.state = 8
+                # if self.index == 0:
+                #     self.stepper_cmd = self.STP_POI_POS
+                #     if abs(self.stepper - self.STP_POI_POS) <= 1:
+                #         if not self.is_manual:
+                #             self.release_cmd = True
+                #             release_cmd = Bool()
+                #             release_cmd.data = self.release_cmd
+                #             self.release_publisher.publish(release_cmd)
+                #             time.sleep(0.5)
+                #             self.state = 8
+                # elif not self.index == 0:
+                self.stepper_cmd = self.STP_SERCH_POS
+                if abs(self.stepper - self.STP_SERCH_POS) <= 1:
+                    if not self.is_manual:
+                        self.release_cmd = True
+                        release_cmd = Bool()
+                        release_cmd.data = self.release_cmd
+                        self.release_publisher.publish(release_cmd)
+                        time.sleep(0.5)
+                        self.state = 8
 
             elif self.box < 6:
                 self.stepper_cmd = self.STP_SHOOT_POS

@@ -310,12 +310,12 @@ class State(Node):
         elif self.state == 4:
             # self.target_cmd = False
             self.move_cmd = False
-            if self.index == 0:
-                self.stepper_cmd = self.STP_POI_POS
-                if abs(self.stepper - self.STP_POI_POS) <= 1:
-                    self.state = 5
+            # if self.index == 0:
+            #     self.stepper_cmd = self.STP_POI_POS
+            #     if abs(self.stepper - self.STP_POI_POS) <= 1:
+            #         self.state = 5
 
-            elif not self.index == 0 and self.index < 5:
+            if self.index < 5:
                 self.state = 5
 
             elif self.index > 5:
@@ -330,14 +330,14 @@ class State(Node):
 
         elif self.state == 5:
             self.move_cmd = True
-            if self.index == 0:
-                self.stepper_cmd = self.STP_POI_POS
-                if abs(self.stepper - self.STP_POI_POS) <= 1:
-                    self.box = 6
-                    self.state = 6
+            # if self.index == 0:
+            #     self.stepper_cmd = self.STP_POI_POS
+            #     if abs(self.stepper - self.STP_POI_POS) <= 1:
+            #         self.box = 6
+            #         self.state = 6
 
-            elif not self.index == 0:
-                self.stepper_cmd = self.STP_INIT_POS
+            # elif not self.index == 0:
+            self.stepper_cmd = self.STP_INIT_POS
  
         elif self.state == 6:
             self.move_cmd = False
@@ -345,26 +345,26 @@ class State(Node):
 
         elif self.state == 7:
             if self.box == 6 or self.box == 8:
-                if self.index == 0:
-                    self.stepper_cmd = self.STP_POI_POS
-                    if abs(self.stepper - self.STP_POI_POS) <= 1:
-                        if not self.is_manual:
-                            self.release_cmd = True
-                            release_cmd = Bool()
-                            release_cmd.data = self.release_cmd
-                            self.release_publisher.publish(release_cmd)
-                            time.sleep(0.5)
-                            self.state = 8
-                elif not self.index == 0:
-                    self.stepper_cmd = self.STP_SERCH_POS
-                    if abs(self.stepper - self.STP_SERCH_POS) <= 1:
-                        if not self.is_manual:
-                            self.release_cmd = True
-                            release_cmd = Bool()
-                            release_cmd.data = self.release_cmd
-                            self.release_publisher.publish(release_cmd)
-                            time.sleep(0.5)
-                            self.state = 8
+                # if self.index == 0:
+                #     self.stepper_cmd = self.STP_POI_POS
+                #     if abs(self.stepper - self.STP_POI_POS) <= 1:
+                #         if not self.is_manual:
+                #             self.release_cmd = True
+                #             release_cmd = Bool()
+                #             release_cmd.data = self.release_cmd
+                #             self.release_publisher.publish(release_cmd)
+                #             time.sleep(0.5)
+                #             self.state = 8
+                # elif not self.index == 0:
+                self.stepper_cmd = self.STP_SERCH_POS
+                if abs(self.stepper - self.STP_SERCH_POS) <= 1:
+                    if not self.is_manual:
+                        self.release_cmd = True
+                        release_cmd = Bool()
+                        release_cmd.data = self.release_cmd
+                        self.release_publisher.publish(release_cmd)
+                        time.sleep(0.5)
+                        self.state = 8
 
             elif self.box < 6:
                 self.stepper_cmd = self.STP_SHOOT_POS
