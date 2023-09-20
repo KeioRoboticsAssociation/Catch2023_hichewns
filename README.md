@@ -2,7 +2,7 @@
 ## About
 catch2023 
 team:ハイチューンズ
-Ros関係のプログラムです。
+ROS関係のプログラムです。
 
 ## ノード関係
 ![Untitled Diagram(1)](https://github.com/moyuboo1/cal_rtheta/assets/84272109/53c58fc4-de96-45a8-9c66-ecccfcceeceb)
