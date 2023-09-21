@@ -20,7 +20,7 @@ class XY_to_Rtheta(Node):
         self.degpos_publisher = self.create_publisher(CreateMessage, 'degpos_data', 10)
         self.pos_publisher = self.create_publisher(Float32MultiArray, 'pos_data', 10)
         # self.flag_publisher = self.create_publisher(String, 'is_ended', 10)
-        #subscriber
+        #subscriber 
         self.index_subscription = self.create_subscription(Int8, 'index', self.index_callback, 10)
         self.shooting_index_subscription = self.create_subscription(Int8, 'shooting_index', self.shooting_index_callback, 10)
         self.cmd_state_subscription = self.create_subscription(String,'cmd_state',self.cmd_state_callback,10)
@@ -41,6 +41,8 @@ class XY_to_Rtheta(Node):
         
         self.start_subscription = self.create_subscription(Bool, 'start', self.start_callback, 10)
         self.shooting_comp_publisher = self.create_publisher(Bool, 'shooting_comp', 10)
+        
+        self.move_flg_publisher = self.create_publisher(Bool, 'move_flg', 10)
         # self.joint_subscription = self.create_subscription(JointState, 'joint_states', self.joint_states_callback,10)
         
         self.tmr = self.create_timer(0.1, self.callback)
@@ -90,6 +92,8 @@ class XY_to_Rtheta(Node):
         self.target_comp = False
         self.shooting_comp = False
         self.target_comp_r = False
+
+        self.move_flg = False
 
         self.theta = 0.0
         self.y = 0.0
@@ -189,6 +193,13 @@ class XY_to_Rtheta(Node):
                 elif self.degPos[1] <= 0.0:
                     self.degPos[1] = 0.0
 
+            
+            if self.degPos[1] <= 0.157:
+                self.move_flg = True
+                move_flg = Bool()
+                move_flg.data = self.move_flg
+                self.move_flg_publisher.publish(move_flg)
+
     def joy_callback(self, joy_msg):
         self.theta = joy_msg.data[0]
         self.y = joy_msg.data[1]
@@ -216,7 +227,7 @@ class XY_to_Rtheta(Node):
             self.rev = 0.0
             self.degrev = 0.0
     
-        if self.index < 6:
+        if not (self.index ==1 or self.index == 2 or self.index == 3):
             self.currentPos[4]=-math.pi/4
             self.currentPos[5]=-math.pi/4
             self.currentPos[6]=-math.pi/4
@@ -228,7 +239,7 @@ class XY_to_Rtheta(Node):
                 self.degPos[3] += 180.0
             self.index_prev = self.index
 
-        elif self.index >= 6:
+        elif self.index == 1 or self.index == 2 or self.index == 3:
         # elif self.servo_cmd == 0:
             self.currentPos[4]=0.0
             self.currentPos[5]=0.0
@@ -284,12 +295,12 @@ class XY_to_Rtheta(Node):
             # if self.target_error_r <= 0.05 and self.y == 0.0 and self.theta == 0.0:
             # and self.y == 0.0 and self.theta == 0.0:
 
-            if self.index == 1:
+            if self.index == 4:
                 self.target_error_th = 60.0
-            elif not self.index == 1 and self.index < 6:
+            elif self.index > 4:
                 self.target_error_th = 120.0
             
-            elif self.index >= 6:
+            elif self.index == 1 or self.index == 2 or self.index == 3:
                 self.target_error_th = 60.0
   
             if self.target_error < self.target_error_th:
@@ -383,28 +394,17 @@ class XY_to_Rtheta(Node):
             self.rev_shooting = 0.0
             self.degrev_shooting = 0.0
         
-        if self.shooting_index == 7:
-            self.currentPos[4]=0.0
-            self.currentPos[5]=0.0
-            self.currentPos[6]=0.0
-            self.degPos[4] = 0.0
-            self.currentPos[3]= -self.currentPos[0]+self.rev_shooting
-            self.degPos[3] = -self.degPos[0] + self.degrev_shooting
-            if self.degPos[3] < 0:
-                self.degPos[3] += 180.0
-            self.shooting_index_prev = self.shooting_index
-        
-        elif not self.shooting_index == 7:
-            self.currentPos[3]=-(self.currentPos[0] - math.pi/2) + self.rev_shooting
-            self.currentPos[4]=0.0
-            self.currentPos[5]=0.0
-            self.currentPos[6]=0.0
 
-            self.degPos[3]=-(self.degPos[0] - 90.0) + self.degrev_shooting
-            if self.degPos[3] < 0:
-                self.degPos[3] += 180.0
-            self.degPos[4]=0.0
-            self.shooting_index_prev = self.shooting_index
+        self.currentPos[3]=-(self.currentPos[0] - math.pi/2) + self.rev_shooting
+        self.currentPos[4]=0.0
+        self.currentPos[5]=0.0
+        self.currentPos[6]=0.0
+
+        self.degPos[3]=-(self.degPos[0] - 90.0) + self.degrev_shooting
+        if self.degPos[3] < 0:
+            self.degPos[3] += 180.0
+        self.degPos[4]=0.0
+        self.shooting_index_prev = self.shooting_index
 
 
         if self.armtheta > 0:
