@@ -57,6 +57,7 @@ class State(Node):
         self.STP_INIT_POS = 0 #0
         self.STP_SHOOT_POS = 40 #1
         self.STP_POI_POS = 110 #1.5
+        self.STP_SERCH_COMMON_POS = 187
         self.STP_SERCH_POS = 205 #2
         self.STP_COMMON_POS = 220 #3
         self.STP_PUT_POS = 250 #4
@@ -261,21 +262,39 @@ class State(Node):
             self.servo_publisher.publish(servo_cmd) 
 
             if self.target_comp == True:
-                self.stepper_cmd = self.STP_SERCH_POS
+                if self.index < 6:
+                    self.stepper_cmd = self.STP_SERCH_POS
+                elif self.index >= 6:
+                    self.stepper_cmd = self.STP_SERCH_COMMON_POS
 
             if self.target_comp_r == True:
-                if abs(self.stepper - self.STP_SERCH_POS) <= 1:
-                    if not self.is_manual:
-                        self.target_comp = False
-                        targetcomp = Bool()
-                        targetcomp.data = self.target_comp
-                        self.targetcomp_publisher.publish(targetcomp)
-                        self.target_comp_r = False
-                        self.target_cmd = False
-                        self.state = 3
-                    elif self.is_manual:
-                        if self.box == 7:
-                            self.state = 9
+                if self.index < 6:
+                    if abs(self.stepper - self.STP_SERCH_POS) <= 1:
+                        if not self.is_manual:
+                            self.target_comp = False
+                            targetcomp = Bool()
+                            targetcomp.data = self.target_comp
+                            self.targetcomp_publisher.publish(targetcomp)
+                            self.target_comp_r = False
+                            self.target_cmd = False
+                            self.state = 3
+                        elif self.is_manual:
+                            if self.box == 7:
+                                self.state = 9
+                elif self.index >= 6:
+                    if abs(self.stepper - self.STP_SERCH_COMMON_POS) <= 1:
+                        if not self.is_manual:
+                            self.target_comp = False
+                            targetcomp = Bool()
+                            targetcomp.data = self.target_comp
+                            self.targetcomp_publisher.publish(targetcomp)
+                            self.target_comp_r = False
+                            self.target_cmd = False
+                            self.state = 3
+                        elif self.is_manual:
+                            if self.box == 7:
+                                self.state = 9
+
 
             # targetcomp_r = Bool()
             # targetcomp_r.data = self.target_comp_r
