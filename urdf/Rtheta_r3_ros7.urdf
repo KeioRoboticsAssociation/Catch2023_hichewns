@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="cal_rtheta">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.00160370698642621 0.0107956954477133 -0.149734037395244"
+        rpy="0 0 0" />
+      <mass
+        value="1.76467094746733" />
+      <inertia
+        ixx="0.0130580476163935"
+        ixy="-3.79453594738795E-07"
+        ixz="-1.50763445631438E-11"
+        iyy="0.0128267428633629"
+        iyz="1.82018199532067E-08"
+        izz="0.0107367180747605" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="arm1">
+    <inertial>
+      <origin
+        xyz="0.0312775232260679 0.000635242435226679 0.056171469374134"
+        rpy="0 0 0" />
+      <mass
+        value="0.520980607899731" />
+      <inertia
+        ixx="0.000903619648763205"
+        ixy="0.00378344788372265"
+        ixz="2.85641636872506E-07"
+        iyy="0.0168871184341624"
+        iyz="-3.72273253329936E-07"
+        izz="0.0177519568593608" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/arm1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/arm1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm1"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="arm1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="arm2">
+    <inertial>
+      <origin
+        xyz="-0.108104017786642 0.0323707462667267 0.0798883367708593"
+        rpy="0 0 0" />
+      <mass
+        value="0.230381740983757" />
+      <inertia
+        ixx="0.000393906462910755"
+        ixy="0.00165222259025315"
+        ixz="-2.34853539868513E-06"
+        iyy="0.00737373391148167"
+        iyz="4.80424306246427E-07"
+        izz="0.00775520437322265" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/arm2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/arm2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm2"
+    type="prismatic">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="arm1" />
+    <child
+      link="arm2" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="0"
+      upper="0.56"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="hand">
+    <inertial>
+      <origin
+        xyz="-0.00160983118122737 0.106669834780246 -0.000361834155724355"
+        rpy="0 0 0" />
+      <mass
+        value="0.0507440794437008" />
+      <inertia
+        ixx="0.000887164087976536"
+        ixy="-1.16649700649515E-18"
+        ixz="-1.36800261168017E-09"
+        iyy="1.53912665246415E-06"
+        iyz="-6.11571918404028E-19"
+        izz="0.000887169866959098" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/hand.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/hand.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="hand"
+    type="prismatic">
+    <origin
+      xyz="-0.49658 0.11961 0.0905"
+      rpy="1.5708 0 0" />
+    <parent
+      link="arm2" />
+    <child
+      link="hand" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="0"
+      upper="0.3"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="end_ef">
+    <inertial>
+      <origin
+        xyz="-0.00144457687464167 -0.106147757465274 -0.000620408831075753"
+        rpy="0 0 0" />
+      <mass
+        value="0.040002592462459" />
+      <inertia
+        ixx="9.80541692886343E-05"
+        ixy="8.24268881730792E-09"
+        ixz="-4.53520808674404E-05"
+        iyy="0.000120606727718562"
+        iyz="-3.907954359465E-09"
+        izz="2.38993743368495E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/end_ef.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/end_ef.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="end_ef"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="hand" />
+    <child
+      link="end_ef" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="end_ef_45">
+    <inertial>
+      <origin
+        xyz="0.00156579648126109 -0.151057654667525 -0.000180693528590875"
+        rpy="0 0 0" />
+      <mass
+        value="0.106532651216036" />
+      <inertia
+        ixx="3.68455215265194E-05"
+        ixy="-5.81090837338056E-06"
+        ixz="-1.54292088118788E-06"
+        iyy="2.85728498057774E-05"
+        iyz="5.46004726324244E-07"
+        izz="2.95506210946848E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/end_ef_45.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://cal_rtheta/meshes/end_ef_45.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="end_ef_45"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="end_ef" />
+    <child
+      link="end_ef_45" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="0.78"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>

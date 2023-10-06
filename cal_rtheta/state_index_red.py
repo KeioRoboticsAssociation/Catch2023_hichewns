@@ -59,7 +59,7 @@ class State(Node):
         self.STP_POI_POS = 110 #1.5
         self.STP_SERCH_COMMON_POS = 187
         self.STP_SERCH_POS = 205 #2
-        self.STP_COMMON_POS = 220 #3
+        self.STP_COMMON_POS = 224 #3
         self.STP_PUT_POS = 250 #4
         self.STP_OWN_POS = 270 #5
         self.stepper_cmd = self.STP_INIT_POS
@@ -115,7 +115,7 @@ class State(Node):
     
     def target_error_callback(self, target_error_msg):
         self.target_error = target_error_msg.data
-        if self.target_error < 2.0:
+        if self.target_error < 5.0:
             self.target_comp_r = True
         else:
             self.target_comp_r = False
