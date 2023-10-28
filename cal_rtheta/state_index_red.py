@@ -68,7 +68,7 @@ class State(Node):
         self.STP_POI_POS = 110 #1.5
         self.STP_SERCH_POS = 200 #2
         self.STP_SERCH_COMMON_POS = 187
-        self.STP_COMMON_POS = 220 #3
+        self.STP_COMMON_POS = 224 #3
         self.STP_PUT_POS = 250 #4
         self.STP_OWN_POS = 270 #5
         self.stepper_cmd = self.STP_INIT_POS
